@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domain\Entity\Event" table="events">
+        <id name="id" type="string" length="36">
+            <generator strategy="NONE"/>
+        </id>
+        <field name="title" type="string" length="255"/>
+        <field name="description" type="text"/>
+        <field name="date" type="datetime_immutable"/>
+        <field name="price" type="float"/>
+        <field name="capacity" type="integer"/>
+        <field name="status" type="boolean" />
+    </entity>
+</doctrine-mapping>

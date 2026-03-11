@@ -1,0 +1,37 @@
+FROM php:8.4-fpm-alpine
+
+# Instalar dependencias del sistema
+RUN apk add --no-cache \
+    bash \
+    git \
+    icu-dev \
+    libpq-dev \
+    libpng-dev \
+    libzip-dev \
+    rabbitmq-c-dev \
+    autoconf \
+    g++ \
+    make \
+    curl
+
+# 1. INSTALAR EL SYMFONY CLI
+RUN curl -sS https://get.symfony.com/cli/installer | bash \
+    && mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+
+# Instalar extensiones de PHP
+RUN docker-php-ext-install \
+    pdo_pgsql \
+    intl \
+    zip \
+    gd
+
+# Instalar la extensión AMQP para RabbitMQ (vía PECL)
+RUN pecl install amqp \
+    && docker-php-ext-enable amqp
+
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+EXPOSE 9000

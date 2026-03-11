@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+# Instalar Angular CLI de forma global
+RUN npm install -g @angular/cli@latest
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+# Exponer el puerto por defecto de Angular
+EXPOSE 4200
+
+# El comando por defecto será simplemente mantenerlo abierto 
+# para que podamos ejecutar comandos desde fuera
+CMD ["tail", "-f", "/dev/null"]

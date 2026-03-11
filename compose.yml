@@ -1,0 +1,72 @@
+services:
+  #1. Base de datos PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_pass
+      POSTGRES_DB: entrypass_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data #Persistencia de datos
+
+  #2. Broker de mensajeria (RabbitMQ)
+  rabbitmq:
+    image: rabbitmq:3-management-alpine #
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  #3. Backend (PHP-FPM)
+  php:
+    build:
+      context: ./docker/php #construimos una imagen personalizada basada en este Dockerfile
+    container_name: php
+    volumes:
+      - ./backend:/var/www/html #sincroniza tu codigo local con el contenedor
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  #4. Servidor web (Nginx)
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "8080:80" #App disponible en localhost:8000
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf #Inyectando nuestra configuración
+    depends_on:
+      - php
+
+  #5. Frontend (Node / Angular Dev Server)
+  node:
+    build:
+      context: ./docker/frontend
+    container_name: node
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "4200:4200"
+
+  #6.Worker (Procesamiento asincrono)
+  worker:
+    build:
+      context: ./docker/php
+    container_name: worker
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - rabbitmq
+      - postgres
+
+volumes:
+  db-data:
+  rabbitmq-data:
