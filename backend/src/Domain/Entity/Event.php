@@ -2,8 +2,7 @@
 
 namespace App\Domain\Entity;
 
-class Event
-{
+class Event{
     public function __construct(
         private string $id,
         private string $title,
