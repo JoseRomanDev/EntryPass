@@ -11,6 +11,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Uid\Uuid;
 
+
 class CreateEventController extends AbstractController
 {
     #[Route('/api/events', name: 'api_event_create', methods: ['POST'])]

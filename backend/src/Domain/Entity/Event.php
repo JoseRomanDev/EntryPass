@@ -19,5 +19,6 @@ class Event{
     public function getDate(): \DateTimeImmutable { return $this->date; }
     public function getPrice(): float { return $this->price; }
     public function getCapacity(): int { return $this->capacity; }
+    public function setCapacity(int $capacity): void { $this->capacity = $capacity; }
     public function getStatus(): bool { return $this->status; }
 }
