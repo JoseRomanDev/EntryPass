@@ -61,6 +61,8 @@ services:
     build:
       context: ./docker/php
     container_name: worker
+    command: php bin/console messenger:consume async --time-limit=3600 -vv
+    restart: unless-stopped
     volumes:
       - ./backend:/var/www/html
     depends_on:

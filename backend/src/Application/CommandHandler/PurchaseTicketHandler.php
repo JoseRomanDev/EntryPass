@@ -3,12 +3,14 @@
 namespace App\Application\CommandHandler;
 
 use App\Application\Command\PurchaseTicketCommand;
+use App\Application\Message\SendPurchaseEmailMessage;
 use App\Domain\Entity\Purchase;
 use App\Domain\Entity\Ticket;
 use App\Domain\Repository\EventRepositoryInterface;
 use App\Domain\Repository\PurchaseRepositoryInterface;
 use App\Domain\Repository\UserRepositoryInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
 class PurchaseTicketHandler
@@ -16,7 +18,8 @@ class PurchaseTicketHandler
     public function __construct(
         private EventRepositoryInterface    $eventRepository,
         private UserRepositoryInterface     $userRepository,
-        private PurchaseRepositoryInterface $purchaseRepository
+        private PurchaseRepositoryInterface $purchaseRepository,
+        private MessageBusInterface         $bus
     ) {}
 
     public function __invoke(PurchaseTicketCommand $command): Purchase
@@ -61,8 +64,8 @@ class PurchaseTicketHandler
         // 6. Persistir Purchase (cascade persist guarda los Tickets automáticamente)
         $this->purchaseRepository->save($purchase);
 
-        // 7. Aquí irá el dispatch del mensaje a RabbitMQ para enviar el email con QR
-        // $this->bus->dispatch(new SendPurchaseEmailMessage($purchase->getId()));
+        // 7. Despachar mensaje al Worker (RabbitMQ) → generará el QR y enviará el email
+        $this->bus->dispatch(new SendPurchaseEmailMessage($purchase->getId()));
 
         return $purchase;
     }

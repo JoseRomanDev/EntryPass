@@ -17,10 +17,10 @@ security:
             security: false
 
         login:
-            pattern: ^/api/login_check
+            pattern: ^/api/auth/login
             stateless: true
             json_login:
-                check_path: /api/login_check
+                check_path: /api/auth/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             # Activate different ways to authenticate:
@@ -38,7 +38,7 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
-        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/events, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY}
 

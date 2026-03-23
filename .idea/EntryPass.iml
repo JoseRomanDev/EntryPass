@@ -76,6 +76,14 @@
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/symfony/security-csrf" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/symfony/security-http" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/symfony/translation-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/bacon/bacon-qr-code" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/dasprid/enum" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/egulias/email-validator" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/endroid/qr-code" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/symfony/amqp-messenger" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/symfony/mailer" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/symfony/mime" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/symfony/polyfill-intl-idn" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
