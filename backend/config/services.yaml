@@ -25,3 +25,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Application\Port\QrCodeGeneratorInterface: '@App\Infrastructure\Adapter\EndroidQrCodeAdapter'
+    App\Application\Port\PdfGeneratorInterface: '@App\Infrastructure\Adapter\DompdfAdapter'
+    App\Application\Port\EmailSenderInterface: '@App\Infrastructure\Adapter\SymfonyEmailSenderAdapter'

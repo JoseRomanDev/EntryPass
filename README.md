@@ -73,17 +73,22 @@ El proyecto está completamente dockerizado para facilitar su despliegue y desar
 
 ##  Estado Actual del Proyecto
 
+> **📌 Hito actual alcanzado:** El desarrollo más reciente ha consolidado el **flujo asíncrono de compra** de entradas. Se ha completado la integración con **RabbitMQ**, la **generación automática de códigos QR y PDFs** unificados para los tickets, y el envío de documentos por correo electrónico. Además, el código se ha refactorizado cumpliendo estrictamente con el patrón de **Puertos y Adaptadores (Arquitectura Hexagonal)**.
+
 Al momento de esta presentación, se han implementado las siguientes bases fundamentales de la arquitectura:
 
-* **Infraestructura Dockerizada (`compose.yml`)**: Los contenedores esenciales (PostgreSQL, RabbitMQ, PHP-FPM, Nginx, Node) están configurados y orquestados listos para desarrollo puestas en marchas.
+* **Infraestructura Dockerizada (`compose.yml`)**: Los contenedores esenciales (PostgreSQL, RabbitMQ, PHP-FPM, Nginx, Node) están configurados y orquestados listos para desarrollo y puesta en marcha.
 * **Capa de Dominio (Backend)**:
-  * Entidades principales definidas: `User`, `Event`.
-  * Interfaces de repositorios (Ports) establecidas (`EventRepositoryInterface`, `UserRepositoryInterface`).
+  * Entidades principales definidas: `User`, `Event`, `Purchase`, `Ticket`. Se ha refactorizado la lógica para separar la transacción de compra de las entradas individuales.
+  * Interfaces de repositorios (Ports) establecidas (`EventRepositoryInterface`, etc.).
 * **Capa de Aplicación**:
-  * Implementación de los Handlers de Casos de Uso centrales: `CreateEventHandler`, `RegisterUserHandler`.
+  * Casos de uso centrales: `CreateEventHandler`, `RegisterUserHandler`, `ProcessPurchaseHandler`.
+  * **Puertos de Aplicación**: Definición estricta de interfaces abstractas (`QrCodeGeneratorInterface`, `PdfGeneratorInterface`, `EmailSenderInterface`) para desacoplar la lógica de negocio de librerías concretas.
+  * Procesamiento asíncrono: `SendPurchaseEmailHandler` (vía Symfony Messenger) orquesta en segundo plano la generación visual de tickets y envío final.
 * **Capa de Infraestructura**:
-  * Persistencia configurada utilizando Doctrine ORM con sus respectivos repositorios (`DoctrineEventRepository`, `DoctrineUserRepository`).
-  * Controladores REST iniciales (`RegisterUserController`, `GetUserProfileController`) en fase de final del desarrollo.
+  * **Adaptadores Hexagonales**: Implementaciones tecnológicas concretas inyectadas transparentemente (`DompdfAdapter`, `EndroidQrCodeAdapter`, `SymfonyEmailSenderAdapter`).
+  * Controladores REST funcionales para cada dominio (`User`, `Event`, `Purchase`, `Ticket`).
+  * Persistencia configurada utilizando Doctrine ORM y mensajería a través de RabbitMQ.
 
 ---
 
@@ -91,12 +96,11 @@ Al momento de esta presentación, se han implementado las siguientes bases funda
 
 El desarrollo continúa de forma iterativa hacia el cumplimiento del flujo completo y la finalización del TFG. Las próximas fases incluyen:
 
-1. **Gestión Completa de Entradas (Tickets):** Creación de la entidad `Ticket`, su UUID asociado, su ciclo de vida y relacionarlos con `User` y `Event`.
-2. **Workers y Asincronía (Compra):**
-   * Integración de un Worker para la generación automática de **código QR único** (basado en UUID) mediante Symfony Messenger tras la compra concurrente.
-   * Envío asíncrono de **correos electrónicos** confirmando la entrada con el código QR adjunto.
-3. **Flujo API REST y Autenticación:** Completar el controlador de usuario (login, gestión de sesión/tokens) y consolidar los endpoints del listado de eventos y simulación de compra final.
-4. **Validación de Código QR:** Endpoint protegido para verificar la validez de un ticket escaneado presencialmente en el evento (cambio de status: `valid` -> `used`).
-5. **Frontend SPA (Angular):**
-   * Estructuración del proyecto basado en Features (`auth`, `events`, `tickets`, `profile`).
-   * Pantallas responsive, consumo final de la API e implementación en UI de las entradas compradas por el usuario.
+1. **Endpoint de Validación de QRs (Portería):** 
+   * Desarrollo de un endpoint protegido (ej. `/api/tickets/validate`) para verificar presencialmente la autenticidad de una entrada escaneada y marcar su estado como utilizado (`valid` -> `used`).
+2. **Pasarela de Pagos (Stripe):**
+   * Incorporar una simulación de cobro realista en el backend antes de autorizar y encolar la creación definitiva de los tickets.
+3. **Frontend SPA (Angular):**
+   * Consolidación de la comunicación con la API e integración real del Auth JWT.
+   * Estructuración del proyecto en Features (`auth`, `events`, `tickets`, `profile`).
+   * Pantallas responsive, listado público de eventos, flujo interactivo de compra en la UI y panel de "Mis Entradas" para los usuarios.
