@@ -31,16 +31,26 @@ El proyecto está construido utilizando tecnologías modernas y estándares de l
 
 ##  Arquitectura del Sistema
 
-El sistema sigue una arquitectura de **SPA + API REST + Procesamiento Asíncrono**.
+El sistema cuenta con una arquitectura robusta de **SPA + API REST + Procesamiento Asíncrono**. Actualmente, el proyecto ha consolidado un gran hito: implementar el **flujo asíncrono de compra de entradas** cumpliendo estrictamente con el patrón de **Puertos y Adaptadores (Arquitectura Hexagonal)**.
 
+### Flujo Global de la Aplicación
 1. **Flujo Principal:** `Usuario -> Angular SPA -> Nginx (Proxy) -> Symfony API -> PostgreSQL`.
-2. **Procesamiento Asíncrono:** Tareas pesadas (como la generación de códigos QR y el envío de emails) son delegadas a través de **RabbitMQ**, donde un contenedor `worker` (consumidor de Symfony Messenger) las procesa en segundo plano, permitiendo que la respuesta al usuario sea inmediata durante la compra.
+2. **Procesamiento Asíncrono:** Las tareas pesadas (generación automática de códigos QR, PDFs unificados para los tickets y envío de emails) se delegan a través de **RabbitMQ**. Un contenedor `worker` (consumidor de Symfony Messenger) las procesa en segundo plano para garantizar una respuesta inmediata al usuario.
 
 ### Arquitectura Backend (Hexagonal)
-El backend aísla el dominio lógico del sistema de sus implementaciones técnicas:
-* **Domain**: Entidades (`User`, `Event`, `Ticket`), interfaces de repositorios y Value Objects. Cero dependencias externas.
-* **Application**: Casos de uso (`CommandHandlers`), DTOs y servicios orquestadores.
-* **Infrastructure**: Controladores REST, implementación de persistencia (Doctrine), mensajería (RabbitMQ/Messenger) y servicios externos.
+El backend aísla el dominio lógico del sistema de sus implementaciones tecnológicas. Hasta la fecha se han implementado de forma firme las siguientes capas:
+
+* **Capa de Dominio (Domain)**: (Cero dependencias externas).
+  * Entidades principales definidas: `User`, `Event`, `Purchase`, `Ticket`. La lógica diferencia claramente la transacción general de la compra frente a las entradas individuales.
+  * Interfaces de repositorios (Ports) establecidas (`EventRepositoryInterface`, etc.).
+* **Capa de Aplicación (Application)**:
+  * Casos de uso centrales: `CreateEventHandler`, `RegisterUserHandler`, `ProcessPurchaseHandler`.
+  * **Puertos de Aplicación**: Definición estricta de interfaces abstractas (`QrCodeGeneratorInterface`, `PdfGeneratorInterface`, `EmailSenderInterface`) para desacoplar la lógica de negocio de librerías concretas.
+  * Procesamiento asíncrono: `SendPurchaseEmailHandler` (vía Symfony Messenger) orquesta la generación visual de los tickets y el envío de estos.
+* **Capa de Infraestructura (Infrastructure)**:
+  * **Adaptadores Hexagonales**: Implementaciones tecnológicas concretas inyectadas transparentemente (`DompdfAdapter`, `EndroidQrCodeAdapter`, `SymfonyEmailSenderAdapter`).
+  * Controladores REST funcionales para cada dominio principal (`User`, `Event`, `Purchase`, `Ticket`).
+  * Persistencia configurada usando Doctrine ORM y colas a través de RabbitMQ.
 
 ---
 
@@ -65,30 +75,27 @@ El proyecto está completamente dockerizado para facilitar su despliegue y desar
    ```
    *Esto construirá las imágenes personalizadas y levantará los servicios: `postgres`, `rabbitmq`, `php` (backend), `nginx` (web), `node` (frontend server) y el `worker`.*
 
-3. **Acceder a la aplicación:**
+3. **Instalar dependencias y librerías externas:**
+   Aunque herramientas base como Composer, Symfony CLI y Angular CLI ya están incluidas dentro de las imágenes de Docker (PHP y Node), es indispensable descargar las dependencias externas que utiliza el sistema. Esto instalará paquetes importantes como **LexikJWT** (autenticación), **Endroid QR Code** (generación de códigos QR) y **Dompdf** (creación de PDFs).
+   ```bash
+   # Instalar librerías externas del Backend
+   docker compose exec php composer install
+
+   # Instalar librerías externas del Frontend
+   docker compose exec node npm install
+   ```
+
+4. **Configurar claves JWT:**
+   Como hacemos uso de la librería externa de JWT, es necesario generar el par de claves SSL para la firma y verificación de los tokens:
+   ```bash
+   docker compose exec php php bin/console lexik:jwt:generate-keypair
+   ```
+
+5. **Acceder a la aplicación:**
    * Frontend / Web: `http://localhost:8080` (A través de Nginx) o `http://localhost:4200` (Dev Server Angular).
    * Base de datos y backend están expuestos internamente y gestionados por Nginx/Docker.
 
----
 
-##  Estado Actual del Proyecto
-
-> **📌 Hito actual alcanzado:** El desarrollo más reciente ha consolidado el **flujo asíncrono de compra** de entradas. Se ha completado la integración con **RabbitMQ**, la **generación automática de códigos QR y PDFs** unificados para los tickets, y el envío de documentos por correo electrónico. Además, el código se ha refactorizado cumpliendo estrictamente con el patrón de **Puertos y Adaptadores (Arquitectura Hexagonal)**.
-
-Al momento de esta presentación, se han implementado las siguientes bases fundamentales de la arquitectura:
-
-* **Infraestructura Dockerizada (`compose.yml`)**: Los contenedores esenciales (PostgreSQL, RabbitMQ, PHP-FPM, Nginx, Node) están configurados y orquestados listos para desarrollo y puesta en marcha.
-* **Capa de Dominio (Backend)**:
-  * Entidades principales definidas: `User`, `Event`, `Purchase`, `Ticket`. Se ha refactorizado la lógica para separar la transacción de compra de las entradas individuales.
-  * Interfaces de repositorios (Ports) establecidas (`EventRepositoryInterface`, etc.).
-* **Capa de Aplicación**:
-  * Casos de uso centrales: `CreateEventHandler`, `RegisterUserHandler`, `ProcessPurchaseHandler`.
-  * **Puertos de Aplicación**: Definición estricta de interfaces abstractas (`QrCodeGeneratorInterface`, `PdfGeneratorInterface`, `EmailSenderInterface`) para desacoplar la lógica de negocio de librerías concretas.
-  * Procesamiento asíncrono: `SendPurchaseEmailHandler` (vía Symfony Messenger) orquesta en segundo plano la generación visual de tickets y envío final.
-* **Capa de Infraestructura**:
-  * **Adaptadores Hexagonales**: Implementaciones tecnológicas concretas inyectadas transparentemente (`DompdfAdapter`, `EndroidQrCodeAdapter`, `SymfonyEmailSenderAdapter`).
-  * Controladores REST funcionales para cada dominio (`User`, `Event`, `Purchase`, `Ticket`).
-  * Persistencia configurada utilizando Doctrine ORM y mensajería a través de RabbitMQ.
 
 ---
 
