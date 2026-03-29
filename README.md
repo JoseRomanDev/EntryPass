@@ -95,9 +95,29 @@ El proyecto está completamente dockerizado para facilitar su despliegue y desar
    * Frontend / Web: `http://localhost:8080` (A través de Nginx) o `http://localhost:4200` (Dev Server Angular).
    * Base de datos y backend están expuestos internamente y gestionados por Nginx/Docker.
 
+---
 
+##  Pruebas de la API (Postman)
+
+En la carpeta `/postman` del proyecto se incluyen las colecciones exportadas con todos los endpoints disponibles de la aplicación (Eventos, Autenticación, Compras, etc.). 
+
+Para probar la API localmente usando estos archivos:
+1. Abre tu aplicación de **Postman**.
+2. En tu Workspace, haz clic en el botón **Import** (generalmente arriba a la izquierda) o arrastra y suelta los archivos.
+3. Selecciona los archivos `.json` que se encuentran dentro de la carpeta `postman/` de este proyecto.
+4. Esto añadirá automáticamente las colecciones preconfiguradas para interactuar con la API en `http://localhost:8080`.
+
+###  Instrucciones de Uso y Consideraciones
+Para probar correctamente los endpoints en Postman, ten en cuenta las siguientes reglas de negocio del backend:
+
+* **Autenticación (JWT Bearer):** Gran parte de la API está protegida. Para acceder a rutas privadas u operaciones que requieran un usuario, primero debes realizar una petición al endpoint de **Login**. Copia el token devuelto y en tu petición coloca ese valor en la pestaña **Authorization** seleccionando el tipo **Bearer Token**.
+* **Gestión de Roles (`ROLE_ADMIN` vs `ROLE_USER`):** El sistema verifica el rol del usuario que realiza la petición.
+  * Solo los administradores (`ROLE_ADMIN`) están autorizados a realizar acciones de gestión globales, como **crear, editar o eliminar Eventos**.
+  * Los usuarios normales (`ROLE_USER`) tienen acceso a explorar eventos e iniciar flujos de **Compras de Entradas** de cara al público general.
+* **Procesamiento de Compras:** Cuando envíes un `POST` de prueba para comprar una entrada en la colección de Purchases, recuerda que la respuesta del servidor es rápida e indica que ha aceptado la petición (Cód. 202). El procesamiento de PDFs, códigos QR y del envío del e-mail de compra lo realiza RabbitMQ en segundo plano como parte de la Arquitectura Hexagonal.
 
 ---
+
 
 ##  Implementaciones Futuras (Roadmap)
 
