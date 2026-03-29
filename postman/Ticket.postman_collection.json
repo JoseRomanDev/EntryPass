@@ -1,0 +1,42 @@
+{
+  "info": {
+    "_postman_id": "2e44f0af-1fa2-44aa-8fb1-061b4b2e3cb0",
+    "name": "Ticket",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53119205",
+    "_collection_link": "https://go.postman.co/collection/53119205-2e44f0af-1fa2-44aa-8fb1-061b4b2e3cb0?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "http://localhost:8080/api/purchases/my",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NzM4Njk1NzcsImV4cCI6MTc3Mzg3MzE3Nywicm9sZXMiOlsiUk9MRV9BRE1JTiJdLCJ1c2VybmFtZSI6ImFkbWluX3JlYWxAdGZnLmNvbSJ9.SfAW-0hSjSk0-YHWM0UVojChpJKwiLD2-8QlOjPAb1vov24xIOUQs1eyj2Oxb59PAnqIjaCunWubUxHR17BRPWXMvfQ0e5lADsa62yF_4EfZhP4COOOid_UV8hRuIlbt4y5CznbwJ18sBga3kVvzw4oJLEUyrV6StdJ_0ZbMezt0ybBmbek-EuTCoRG8OLoCnjq-yG5jZ0FT-PGKpOFinW7swbt8JMQQoYlF1ypzUitLGc266opL0JWNuMZfsI2x2UNwpEtlfyYd_sbwKkqOE3ndTxB6VMzLbcoH9pqPj5FvpuqmgA29EMkr4ZqdoxSGZaU-ldMhW1AhybwdmSizTQ",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/purchases/my",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "purchases",
+            "my"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

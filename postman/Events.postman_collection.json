@@ -1,0 +1,109 @@
+{
+  "info": {
+    "_postman_id": "4efadd4e-664d-4fbb-bf07-3344ce1f2fff",
+    "name": "Events",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53119205",
+    "_collection_link": "https://go.postman.co/collection/53119205-4efadd4e-664d-4fbb-bf07-3344ce1f2fff?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "http://localhost:8080/api/events",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NzM2OTAyODQsImV4cCI6MTc3MzY5Mzg4NCwicm9sZXMiOlsiUk9MRV9BRE1JTiJdLCJ1c2VybmFtZSI6ImFkbWluX3JlYWxAdGZnLmNvbSJ9.kvL1KCpLAX0GEjO_Tyc9xgGYSkK-CiWcTPrlRHiA3cxpM1HFeyJs64uGrMYyIVr-as7KQai0Gw5WRqe0Y7RzuWzJjb3K9CuhqfpFOR8jUKz7jw-_coBgyWCA09GskTflqYFtOyUotPlShuE3VUKZuh8Xj2hXZ1DI_7NvwduyMdQUNykH_if6vboK6L3LVWWYxDU1ZyKDSShvaoSatYv6juqm6AIvKBbn9-ojb8qiPnyWcBrRSH4xkipVgf17WSAE_SmQdGh71Q-G89BiCC5E4hpxZ9evubpvqGxqtpzJTvIBaTxilE5OI-pAOy32uvFjUpBsNv1NUAUs03o3G0Et4g",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Taller VIP PHP\",\r\n  \"description\": \"Solo para 5 personas.\",\r\n  \"date\": \"2026-09-10 10:00:00\",\r\n  \"price\": 99.00,\r\n  \"capacity\": 5,\r\n  \"status\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/events",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "events"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/events",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NzM2OTAyODQsImV4cCI6MTc3MzY5Mzg4NCwicm9sZXMiOlsiUk9MRV9BRE1JTiJdLCJ1c2VybmFtZSI6ImFkbWluX3JlYWxAdGZnLmNvbSJ9.kvL1KCpLAX0GEjO_Tyc9xgGYSkK-CiWcTPrlRHiA3cxpM1HFeyJs64uGrMYyIVr-as7KQai0Gw5WRqe0Y7RzuWzJjb3K9CuhqfpFOR8jUKz7jw-_coBgyWCA09GskTflqYFtOyUotPlShuE3VUKZuh8Xj2hXZ1DI_7NvwduyMdQUNykH_if6vboK6L3LVWWYxDU1ZyKDSShvaoSatYv6juqm6AIvKBbn9-ojb8qiPnyWcBrRSH4xkipVgf17WSAE_SmQdGh71Q-G89BiCC5E4hpxZ9evubpvqGxqtpzJTvIBaTxilE5OI-pAOy32uvFjUpBsNv1NUAUs03o3G0Et4g",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Festival Tech 2026\",\r\n  \"description\": \"Gran festival de tecnología.\",\r\n  \"date\": \"2026-08-20 18:00:00\",\r\n  \"price\": 25.00,\r\n  \"capacity\": 500,\r\n  \"status\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/events",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "events"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/events",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/events",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "events"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
