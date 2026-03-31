@@ -9,12 +9,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Uid\Uuid;
 
 
 class CreateEventController extends AbstractController
 {
     #[Route('/api/events', name: 'api_event_create', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function __invoke(Request $request, MessageBusInterface $bus): JsonResponse
     {
         // 1. Extraemos los datos del JSON

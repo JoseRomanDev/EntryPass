@@ -66,6 +66,7 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
+        "test": "php bin/phpunit --testdox",
         "post-install-cmd": [
             "@auto-scripts"
         ],
@@ -83,6 +84,9 @@
         }
     },
     "require-dev": {
+        "phpunit/phpunit": "*",
+        "symfony/browser-kit": "8.0.*",
+        "symfony/css-selector": "8.0.*",
         "symfony/maker-bundle": "^1.66"
     }
 }

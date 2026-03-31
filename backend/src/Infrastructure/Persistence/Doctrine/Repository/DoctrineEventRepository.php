@@ -33,4 +33,15 @@ class DoctrineEventRepository extends ServiceEntityRepository implements EventRe
     {
         return parent::findAll();
     }
+
+    public function findActive(): array
+    {
+        return $this->findBy(['status' => true]);
+    }
+
+    public function delete(Event $event): void
+    {
+        $this->getEntityManager()->remove($event);
+        $this->getEntityManager()->flush();
+    }
 }

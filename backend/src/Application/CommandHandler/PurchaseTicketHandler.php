@@ -38,7 +38,16 @@ class PurchaseTicketHandler
             throw new \Exception("No hay suficientes entradas disponibles.");
         }
 
-        // 3. Crear la Purchase
+        // 3. Comprobar límite de 4 entradas por usuario para este evento
+        $purchasedAlready = $this->purchaseRepository->countTicketsByUserAndEvent($user, $event);
+        if (($purchasedAlready + $quantity) > 4) {
+            throw new \Exception(sprintf(
+                "Límite excedido. Ya posees %d entradas y el máximo permitido por usuario es de 4 para este evento.",
+                $purchasedAlready
+            ));
+        }
+
+        // 4. Crear la Purchase
         $purchase = new Purchase(
             id:         $this->generateUuid(),
             user:       $user,

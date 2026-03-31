@@ -10,13 +10,17 @@ use Symfony\Component\Routing\Attribute\Route;
 class ListEventsController extends AbstractController
 {
     public function __construct(
-        private EventRepositoryInterface $repository
+        private EventRepositoryInterface $repository,
+        private \Symfony\Bundle\SecurityBundle\Security $security
     ) {}
 
     #[Route('/api/events', name: 'api_event_list', methods: ['GET'])]
     public function __invoke(): JsonResponse
     {
-        $events = $this->repository->findAll();
+        // Si es Admin, ve todos. Si no, solo los activos.
+        $events = $this->security->isGranted('ROLE_ADMIN') 
+            ? $this->repository->findAll() 
+            : $this->repository->findActive();
 
         $data = array_map(function ($event) {
             return [
