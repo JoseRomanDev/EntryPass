@@ -11,6 +11,7 @@ use App\Domain\Repository\PurchaseRepositoryInterface;
 use App\Domain\Repository\UserRepositoryInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
+use App\Application\Port\PaymentGatewayInterface;
 
 #[AsMessageHandler]
 class PurchaseTicketHandler
@@ -19,7 +20,8 @@ class PurchaseTicketHandler
         private EventRepositoryInterface    $eventRepository,
         private UserRepositoryInterface     $userRepository,
         private PurchaseRepositoryInterface $purchaseRepository,
-        private MessageBusInterface         $bus
+        private MessageBusInterface         $bus,
+        private PaymentGatewayInterface     $paymentGateway
     ) {}
 
     public function __invoke(PurchaseTicketCommand $command): Purchase
@@ -47,16 +49,20 @@ class PurchaseTicketHandler
             ));
         }
 
-        // 4. Crear la Purchase
+        // 4. Procesar el pago simulado
+        $totalPrice = $event->getPrice() * $quantity;
+        $this->paymentGateway->processPayment($totalPrice);
+
+        // 5. Crear la Purchase
         $purchase = new Purchase(
             id:         $this->generateUuid(),
             user:       $user,
             event:      $event,
             quantity:   $quantity,
-            totalPrice: $event->getPrice() * $quantity
+            totalPrice: $totalPrice
         );
 
-        // 4. Crear un Ticket por cada unidad
+        // 6. Crear un Ticket por cada unidad
         for ($i = 0; $i < $quantity; $i++) {
             $ticket = new Ticket(
                 id:          $this->generateUuid(),
@@ -66,14 +72,14 @@ class PurchaseTicketHandler
             $purchase->addTicket($ticket);
         }
 
-        // 5. Reducir capacidad del evento
+        // 7. Reducir capacidad del evento
         $event->setCapacity($event->getCapacity() - $quantity);
         $this->eventRepository->save($event);
 
-        // 6. Persistir Purchase (cascade persist guarda los Tickets automáticamente)
+        // 8. Persistir Purchase (cascade persist guarda los Tickets automáticamente)
         $this->purchaseRepository->save($purchase);
 
-        // 7. Despachar mensaje al Worker (RabbitMQ) → generará el QR y enviará el email
+        // 9. Despachar mensaje al Worker (RabbitMQ) → generará el QR y enviará el email
         $this->bus->dispatch(new SendPurchaseEmailMessage($purchase->getId()));
 
         return $purchase;

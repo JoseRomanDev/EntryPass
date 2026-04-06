@@ -234,6 +234,8 @@ A fecha de la presente entrega, se han implementado las siguientes bases fundame
 - ✅ **Infraestructura Docker completa:** PostgreSQL, RabbitMQ, PHP-FPM, Nginx, Node, Worker orquestados.
 - ✅ **Capa de Dominio y Aplicación:** Entidades principales y casos de uso con arquitectura de Puertos y Adaptadores bien consolidada. Emisión asíncrona probada.
 - ✅ **Capa de Infraestructura:** Persistencia y envíos mediante Symfony Mailer.
+- ✅ **Flujos de Seguridad Avanzada y Pago:** Implementación de un simulador de pasarela de pagos íntegramente adaptado al Sistema Hexagonal, blindado con Tests Unitarios y Funcionales (PHPUnit).
+- ✅ **Endpoint de End-User (Validación en Portería):** Endpoint diseñado funcionalmente para controlar el aforo en base al cambio de la estructura de estado real de las bases de datos de `TICKETS`.
 - 🔄 **Frontend Angular:** Proyecto inicializado.
 
 ---
@@ -246,9 +248,9 @@ A fecha de la presente entrega, se han implementado las siguientes bases fundame
 | **Fase 2 – Dominio y Aplicación** | Definición de entidades, interfaces y primeros casos de uso. | ✅ Completada |
 | **Fase 3 – API REST** | Autenticación JWT y lógica core robustecida en infraestructura. | ✅ Completada |
 | **Fase 4 – Gestión de Tickets y QR** | Generación asíncrona de QR y envío de email mediante RabbitMQ. | ✅ Completada |
-| **Fase 5 – Validación de Acceso** | Endpoint de verificación de QR para cambiar estado (`valid` -> `used`). | ⏳ Pendiente |
+| **Fase 5 – Pagos y Validación Física** | Generación del núcleo del simulador de transacciones económicas (arquitectura hexagonal) de forma blindada, más endpoint formalizado (`valid` -> `used`) listo para verificar el scanner. | ✅ Completada |
 | **Fase 6 – Frontend SPA** | Pantallas responsivas de Angular: eventos, compra interactiva y perfil. | ⏳ Pendiente |
-| **Fase 7 – Testing final y QA** | Validación del flujo completo de cara a producción simulada. | ⏳ Pendiente |
+| **Fase 7 – Testing final y QA** | Verificación unitaria progresiva de todos los manejadores en Backend, listos para la capa visual general de Testing. | ⏳ En Progreso / Testing |
 
 ---
 

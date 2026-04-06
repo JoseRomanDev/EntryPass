@@ -13,6 +13,7 @@ use App\Domain\Repository\UserRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
+use App\Application\Port\PaymentGatewayInterface;
 
 class PurchaseTicketHandlerTest extends TestCase
 {
@@ -20,6 +21,7 @@ class PurchaseTicketHandlerTest extends TestCase
     private $userRepository;
     private $purchaseRepository;
     private $bus;
+    private $paymentGateway;
     private $handler;
 
     protected function setUp(): void
@@ -28,12 +30,14 @@ class PurchaseTicketHandlerTest extends TestCase
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->purchaseRepository = $this->createMock(PurchaseRepositoryInterface::class);
         $this->bus = $this->createMock(MessageBusInterface::class);
+        $this->paymentGateway = $this->createMock(PaymentGatewayInterface::class);
 
         $this->handler = new PurchaseTicketHandler(
             $this->eventRepository,
             $this->userRepository,
             $this->purchaseRepository,
-            $this->bus
+            $this->bus,
+            $this->paymentGateway
         );
     }
 
@@ -45,6 +49,7 @@ class PurchaseTicketHandlerTest extends TestCase
         $this->userRepository->method('findByEmail')->willReturn($user);
         $this->eventRepository->method('findById')->willReturn($event);
         $this->purchaseRepository->method('countTicketsByUserAndEvent')->willReturn(0);
+        $this->paymentGateway->expects($this->once())->method('processPayment')->willReturn(true);
 
         $this->bus->expects($this->once())->method('dispatch')->willReturn(new Envelope(new \stdClass()));
         
@@ -82,6 +87,26 @@ class PurchaseTicketHandlerTest extends TestCase
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('No hay suficientes entradas');
+
+        $command = new PurchaseTicketCommand('event-1', 2, 'test@example.com');
+        ($this->handler)($command);
+    }
+
+    public function testPurchasePaymentFailed(): void
+    {
+        $user = new User('user-1', 'Test User', 'test@example.com', 'hashed_pass');
+        $event = new Event('event-1', 'Test Event', 'Desc', new \DateTimeImmutable('2025-01-01'), 100.0, 10);
+
+        $this->userRepository->method('findByEmail')->willReturn($user);
+        $this->eventRepository->method('findById')->willReturn($event);
+        $this->purchaseRepository->method('countTicketsByUserAndEvent')->willReturn(0);
+
+        $this->paymentGateway->expects($this->once())
+            ->method('processPayment')
+            ->willThrowException(new \Exception('Pago rechazado'));
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Pago rechazado');
 
         $command = new PurchaseTicketCommand('event-1', 2, 'test@example.com');
         ($this->handler)($command);

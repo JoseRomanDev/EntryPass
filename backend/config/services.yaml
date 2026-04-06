@@ -28,3 +28,5 @@ services:
     App\Application\Port\QrCodeGeneratorInterface: '@App\Infrastructure\Adapter\EndroidQrCodeAdapter'
     App\Application\Port\PdfGeneratorInterface: '@App\Infrastructure\Adapter\DompdfAdapter'
     App\Application\Port\EmailSenderInterface: '@App\Infrastructure\Adapter\SymfonyEmailSenderAdapter'
+    App\Application\Port\PaymentGatewayInterface: '@App\Infrastructure\Adapter\SimulatedPaymentGatewayAdapter'
+

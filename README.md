@@ -119,15 +119,18 @@ Para probar correctamente los endpoints en Postman, ten en cuenta las siguientes
 ---
 
 
+##  Hitos Alcanzados Recientemente
+
+* **Endpoint de Validación de QRs (Portería):** 
+  * Se ha desarrollado e implementado un endpoint protegido (`/api/tickets/validate`) para verificar presencialmente la autenticidad de una entrada escaneada y marcar su estado como consumido (`valid` -> `used`), asegurando el ecosistema contra fraude.
+* **Simulación de Pasarela de Pagos:**
+  * Incorporación de una simulación de cobro realista en el backend antes de autorizar y encolar la creación definitiva de los tickets. Implementado mediante Patrón de Diseño Hexagonal (Ports & Adapters) garantizando desacoplamiento total. Todo fuertemente respaldado por testing en **PHPUnit** y tests funcionales para asegurar la inviolabilidad de los datos en fallos transaccionales.
+
 ##  Implementaciones Futuras (Roadmap)
 
-El desarrollo continúa de forma iterativa hacia el cumplimiento del flujo completo y la finalización del TFG. Las próximas fases incluyen:
+El desarrollo continúa de forma iterativa hacia el cumplimiento del flujo completo y la finalización del TFG. Las próximas fases clave incluyen:
 
-1. **Endpoint de Validación de QRs (Portería):** 
-   * Desarrollo de un endpoint protegido (ej. `/api/tickets/validate`) para verificar presencialmente la autenticidad de una entrada escaneada y marcar su estado como utilizado (`valid` -> `used`).
-2. **Pasarela de Pagos (Stripe):**
-   * Incorporar una simulación de cobro realista en el backend antes de autorizar y encolar la creación definitiva de los tickets.
-3. **Frontend SPA (Angular):**
+1. **Frontend SPA (Angular):**
    * Consolidación de la comunicación con la API e integración real del Auth JWT.
    * Estructuración del proyecto en Features (`auth`, `events`, `tickets`, `profile`).
    * Pantallas responsive, listado público de eventos, flujo interactivo de compra en la UI y panel de "Mis Entradas" para los usuarios.
