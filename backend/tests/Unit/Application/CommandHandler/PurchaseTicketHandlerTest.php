@@ -14,6 +14,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Application\Port\PaymentGatewayInterface;
+use App\Domain\Exception\InsufficientCapacityException;
+use App\Domain\Exception\PurchaseLimitExceededException;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PurchaseTicketHandlerTest extends TestCase
 {
@@ -21,7 +24,7 @@ class PurchaseTicketHandlerTest extends TestCase
     private $userRepository;
     private $purchaseRepository;
     private $bus;
-    private $paymentGateway;
+    private $entityManager;
     private $handler;
 
     protected function setUp(): void
@@ -31,13 +34,21 @@ class PurchaseTicketHandlerTest extends TestCase
         $this->purchaseRepository = $this->createMock(PurchaseRepositoryInterface::class);
         $this->bus = $this->createMock(MessageBusInterface::class);
         $this->paymentGateway = $this->createMock(PaymentGatewayInterface::class);
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
+
+        // Configurar el mock de EntityManager para que ejecute el callback de wrapInTransaction
+        $this->entityManager->method('wrapInTransaction')
+            ->willReturnCallback(function($callback) {
+                return $callback();
+            });
 
         $this->handler = new PurchaseTicketHandler(
             $this->eventRepository,
             $this->userRepository,
             $this->purchaseRepository,
             $this->bus,
-            $this->paymentGateway
+            $this->paymentGateway,
+            $this->entityManager
         );
     }
 
@@ -70,7 +81,7 @@ class PurchaseTicketHandlerTest extends TestCase
         $this->eventRepository->method('findById')->willReturn($event);
         $this->purchaseRepository->method('countTicketsByUserAndEvent')->willReturn(3);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(PurchaseLimitExceededException::class);
         $this->expectExceptionMessage('Límite excedido');
 
         $command = new PurchaseTicketCommand('event-1', 2, 'test@example.com');
@@ -85,7 +96,7 @@ class PurchaseTicketHandlerTest extends TestCase
         $this->userRepository->method('findByEmail')->willReturn($user);
         $this->eventRepository->method('findById')->willReturn($event);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(InsufficientCapacityException::class);
         $this->expectExceptionMessage('No hay suficientes entradas');
 
         $command = new PurchaseTicketCommand('event-1', 2, 'test@example.com');

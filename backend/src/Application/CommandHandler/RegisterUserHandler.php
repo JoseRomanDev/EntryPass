@@ -34,6 +34,4 @@ readonly class RegisterUserHandler{
     }
 
 
-}
-
-?>
+}
