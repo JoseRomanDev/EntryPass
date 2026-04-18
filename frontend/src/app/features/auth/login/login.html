@@ -1,0 +1,55 @@
+<div class="auth-page">
+  <div class="auth-card card fade-in-up">
+    <div class="auth-header">
+      <div class="brand-icon">E</div>
+      <h1 class="heading-lg">Bienvenido de nuevo</h1>
+      <p class="text-body">Accede a tu cuenta de EntryPass</p>
+    </div>
+
+    @if (error()) {
+      <div class="auth-error">{{ error() }}</div>
+    }
+
+    <form class="auth-form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          class="input"
+          placeholder="tu@email.com"
+          [(ngModel)]="email"
+          name="email"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          class="input"
+          placeholder="••••••••"
+          [(ngModel)]="password"
+          name="password"
+          required>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary auth-submit"
+        [disabled]="loading()">
+        @if (loading()) {
+          Iniciando sesión...
+        } @else {
+          Iniciar Sesión
+        }
+      </button>
+    </form>
+
+    <p class="auth-footer-text">
+      ¿No tienes una cuenta?
+      <a routerLink="/auth/register" class="auth-link">Regístrate</a>
+    </p>
+  </div>
+</div>

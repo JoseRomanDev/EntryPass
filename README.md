@@ -13,8 +13,9 @@ El objetivo académico de este proyecto es demostrar el uso y dominio de una **a
 El proyecto está construido utilizando tecnologías modernas y estándares de la industria:
 
 ### Frontend
-* **Angular** (SPA basado en features)
-* Comunicación fluida con API REST
+* **Angular 19** (SPA basado en features)
+* **Diseño High-Fidelity**: Interfaz moderna con estética Premium Dark, paleta Cyan/Teal y componentes altamente interactivos.
+* Comunicación fluida con API REST y gestión de estado reactiva.
 
 ### Backend
 * **Symfony** (API REST)
@@ -54,46 +55,73 @@ El backend aísla el dominio lógico del sistema de sus implementaciones tecnol�
 
 ---
 
-##  Guía de Instalación y Puesta a Punto
+## Guía de Instalación y Puesta a Punto
 
-El proyecto está completamente dockerizado para facilitar su despliegue y desarrollo local.
+El proyecto cuenta con un `Makefile` y está completamente dockerizado para facilitar su despliegue.
 
 ### Prerrequisitos
-* [Docker](https://www.docker.com/) y [Docker Compose](https://docs.docker.com/compose/) instalados en el sistema local.
+*   [Docker Desktop](https://www.docker.com/) y [Docker Compose](https://docs.docker.com/compose/).
+*   Entorno habilitado para ejecutar `make` (en Windows puedes usar WSL2 o Git Bash).
 
-### Pasos
-1. **Clonar el repositorio:**
-   ```bash
-   git clone <url-del-repositorio>
-   cd EntryPass
-   ```
+### Pasos de Instalación (Desde Cero)
 
-2. **Levantar la infraestructura con Docker Compose:**
-   En la raíz del proyecto, ejecuta el siguiente comando:
-   ```bash
-   docker compose up -d --build
-   ```
-   *Esto construirá las imágenes personalizadas y levantará los servicios: `postgres`, `rabbitmq`, `php` (backend), `nginx` (web), `node` (frontend server) y el `worker`.*
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone <url-del-repositorio>
+    cd EntryPass
+    ```
 
-3. **Instalar dependencias y librerías externas:**
-   Aunque herramientas base como Composer, Symfony CLI y Angular CLI ya están incluidas dentro de las imágenes de Docker (PHP y Node), es indispensable descargar las dependencias externas que utiliza el sistema. Esto instalará paquetes importantes como **LexikJWT** (autenticación), **Endroid QR Code** (generación de códigos QR) y **Dompdf** (creación de PDFs).
-   ```bash
-   # Instalar librerías externas del Backend
-   docker compose exec php composer install
+    > [!NOTE]
+    > Asegúrate de estar en una terminal con permisos de administrador o dentro de un entorno que soporte `make` (WSL, Git Bash o PowerShell con Make instalado).
 
-   # Instalar librerías externas del Frontend
-   docker compose exec node npm install
-   ```
+2.  **Levantar e inicializar los contenedores:**
+    Si es la primera vez que ejecutas el proyecto o no tienes las imágenes construidas:
+    ```bash
+    make build
+    make up
+    ```
 
-4. **Configurar claves JWT:**
-   Como hacemos uso de la librería externa de JWT, es necesario generar el par de claves SSL para la firma y verificación de los tokens:
-   ```bash
-   docker compose exec php php bin/console lexik:jwt:generate-keypair
-   ```
+    > [!IMPORTANT]
+    > El primer `make build` puede tardar varios minutos dependiendo de tu conexión, ya que descarga imágenes de PHP, PostgreSQL, Node y RabbitMQ.
 
-5. **Acceder a la aplicación:**
-   * Frontend / Web: `http://localhost:8080` (A través de Nginx) o `http://localhost:4200` (Dev Server Angular).
-   * Base de datos y backend están expuestos internamente y gestionados por Nginx/Docker.
+3.  **Instalar dependencias de las librerías:**
+    Una vez los contenedores estén corriendo, descarga los paquetes de PHP y Node:
+    ```bash
+    # Backend (Symfony + LexikJWT + Dompdf + EndroidQR)
+    docker compose exec php composer install
+
+    # Frontend (Angular + Core UI)
+    docker compose exec node npm install
+    ```
+
+4.  **Generar claves JWT:**
+    Obligatorio para que el sistema de login funcione:
+    ```bash
+    docker compose exec php php bin/console lexik:jwt:generate-keypair
+    ```
+
+    > [!WARNING]
+    > Si el comando anterior falla, verifica que el contenedor `php` esté en estado *Running*. Puedes comprobarlo con `docker ps`.
+
+5.  **Insertar usuario administrador (Seed):**
+    Para poder probar el panel de administración en cualquier dispositivo, inserta el usuario por defecto:
+    ```bash
+    make seed
+    ```
+
+    > [!NOTE]
+    > Esto creará el usuario `admin@entrypass.com` con la contraseña `Admin123!`. Si el usuario ya existe, el comando simplemente te informará de ello.
+
+### Notas y Solución de Problemas
+
+> [!NOTE]
+> **Comandos Útiles:** Usa `make build` si realizas cambios en los Dockerfiles y `make down` para detener los servicios.
+
+*   **Error "compose not found"**: Asegúrate de usar `docker compose` (con espacio) en lugar de `docker-compose` (con guion) si estás en versiones modernas de Docker. El comando `make up` gestiona esto automáticamente por ti.
+*   **Permisos de Claves JWT**: Si recibes errores de autenticación, verifica que las claves en `backend/config/jwt/` tengan los permisos adecuados o vuelve a generarlas.
+*   **Acceso Web**: 
+    *   Frontend: [http://localhost:8080](http://localhost:8080) (Nginx)
+    *   Angular Dev: [http://localhost:4200](http://localhost:4200)
 
 ---
 
@@ -118,19 +146,49 @@ Para probar correctamente los endpoints en Postman, ten en cuenta las siguientes
 
 ---
 
+##  Acceso Administrativo (Testeo)
 
-##  Hitos Alcanzados Recientemente
+Para realizar pruebas en el panel de gestión de eventos, se ha habilitado un usuario con rol de administrador (`ROLE_ADMIN`):
 
+*   **Email:** `admin@entrypass.com`
+*   **Contraseña:** `Admin123!`
+
+> [!NOTE]
+> Este usuario administrador es una semilla (seed) pre-configurada para facilitar el testeo inicial del panel de gestión sin necesidad de crear uno manualmente en la base de datos.
+
+---
+
+
+---
+
+## Hitos y Evolución del Proyecto
+
+Puedes consultar el detalle del proyecto y las guías de uso en los siguientes enlaces:
+
+**[Manual de Usuario (Clientes y Administradores)](docs/manual_usuario.md)**  
+**[Informe de Mejoras (Fase Técnica)](docs/informe_mejoras.md)**
+
+### Hitos Alcanzados Recientemente
+
+* **Frontend SPA Completado Plenamente (Lógica de Compra y Perfil):**
+  * Se implementó exitosamente el flujo de Checkout end-to-end conectando Angular con la API Symfony.
+  * Interfaz de Alta Fidelidad en el Modal de compra con gestión de estado a través de _Signals_ de Angular (selectores de cantidad y validación de stock visual).
+  * Panel de "Mis Entradas" finalizado. Ahora expone y renderiza al vuelo los Códigos QR de cada entrada de forma individualizada a partir del Hash securitizado en base de datos.
+  * Se incorporó el redireccionamiento fluído de autenticación (`Guards`) en la pasarela, para recordar qué intentaba comprar un visitante y redirigirlo inmediatamente tras el Login sin perder recorrido.
 * **Endpoint de Validación de QRs (Portería):** 
   * Se ha desarrollado e implementado un endpoint protegido (`/api/tickets/validate`) para verificar presencialmente la autenticidad de una entrada escaneada y marcar su estado como consumido (`valid` -> `used`), asegurando el ecosistema contra fraude.
 * **Simulación de Pasarela de Pagos:**
   * Incorporación de una simulación de cobro realista en el backend antes de autorizar y encolar la creación definitiva de los tickets. Implementado mediante Patrón de Diseño Hexagonal (Ports & Adapters) garantizando desacoplamiento total. Todo fuertemente respaldado por testing en **PHPUnit** y tests funcionales para asegurar la inviolabilidad de los datos en fallos transaccionales.
+* **Rediseño Estético de Alta Fidelidad (UI/UX):**
+  * Transformación integral de la identidad visual de la aplicación. Migración a un sistema de diseño basado en fondo negro absoluto y acentos Cyan (`#26b1c4`), con una arquitectura de componentes (Navbar, Home, Footer) optimizada para una experiencia fluida y premium.
 
 ##  Implementaciones Futuras (Roadmap)
 
-El desarrollo continúa de forma iterativa hacia el cumplimiento del flujo completo y la finalización del TFG. Las próximas fases clave incluyen:
+El desarrollo ha alcanzado la madurez funcional de todos los flujos base y se acerca al final del TFG. Las próximas fases clave y últimos pasos para cerrar el proyecto se centran en el aseguramiento de calidad:
 
-1. **Frontend SPA (Angular):**
-   * Consolidación de la comunicación con la API e integración real del Auth JWT.
-   * Estructuración del proyecto en Features (`auth`, `events`, `tickets`, `profile`).
-   * Pantallas responsive, listado público de eventos, flujo interactivo de compra en la UI y panel de "Mis Entradas" para los usuarios.
+1. **Optimización y Testeo Global (Fase 7):**
+   * Ampliación del Testing funcional automatizado global de todos los componentes Hexagonales del Backend.
+   * Testing funcional del flujo de componentes expuestos en el Frontend SPA.
+   * Auditoría de accesibilidad y optimización de performance para los motores de Chrome (Lighthouse).
+2. **Despliegue de Producción (Opcional):**
+   * Documentación del pasaje hacia arquitecturas Cloud o servicios VPS para demostrar el empaquetado del ecosistema Docker generado.

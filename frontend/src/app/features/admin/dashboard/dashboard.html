@@ -1,0 +1,100 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <div class="title-group">
+      <h1>Panel de Organización</h1>
+      <span class="badge">Área Protegida</span>
+    </div>
+    <a routerLink="/admin/events/new" class="btn btn-primary">
+      <span class="icon">+</span> Crear Nuevo Evento
+    </a>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">Total de Eventos</div>
+      <div class="stat-value">{{ events().length }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Ingresos Totales (Estimados)</div>
+      <div class="stat-value accent">€ —</div>
+    </div>
+  </div>
+
+  <div class="events-management">
+    <h2>Tus Eventos Activos</h2>
+
+    <!-- LOADING -->
+    <div class="loading-state" *ngIf="isLoading()">
+      <div class="spinner"></div>
+      <p>Cargando información segura...</p>
+    </div>
+
+    <!-- ERROR -->
+    <div class="error-state" *ngIf="error() && !isLoading()">
+      <p>{{ error() }}</p>
+    </div>
+
+    <!-- EMPTY -->
+    <div class="empty-state" *ngIf="!isLoading() && !error() && events().length === 0">
+      <span class="empty-icon">📅</span>
+      <h3>Aún no gestionas ningún evento</h3>
+      <p>Comienza publicando tu primer evento en la cartelera.</p>
+    </div>
+
+    <!-- DATA TABLE -->
+    <div class="table-container" *ngIf="!isLoading() && events().length > 0">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Evento</th>
+            <th>Fecha</th>
+            <th>Precio Unitario</th>
+            <th>Aforo Total</th>
+            <th>Estado Base</th>
+            <th class="actions-col">Gestión</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let event of events()">
+            <td class="col-event">
+              <div class="event-cell">
+                <div class="event-thumb" [style.background]="getGradient(event.id)"></div>
+                <div>
+                  <strong>{{ event.title }}</strong>
+                  <div class="id-hash">{{ event.id.substring(0, 8) }}...</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ event.date | date:'dd MMM yyyy HH:mm' }}</td>
+            <td class="accent-text">{{ event.price | currency:'EUR' }}</td>
+            <td>
+              <div class="capacity-bar">
+                <span>{{ event.capacity }} ud.</span>
+              </div>
+            </td>
+            <td>
+              <span class="status-badge" [class.active]="event.status !== false">
+                {{ event.status === false ? 'No visible' : 'Público' }}
+              </span>
+            </td>
+            <td class="actions-col">
+              <div class="action-buttons">
+                <a [routerLink]="['/admin/events/edit', event.id]" class="btn-icon view" title="Editar Evento">
+                  ✏️
+                </a>
+                <button 
+                  class="btn-icon delete" 
+                  title="Eliminar Evento"
+                  (click)="deleteEvent(event.id, event.title)"
+                  [disabled]="deletingId() === event.id">
+                  <span *ngIf="deletingId() !== event.id">🗑️</span>
+                  <span *ngIf="deletingId() === event.id" class="spinner-small"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,114 @@
+<div class="profile-container">
+
+  <!-- CABECERA DE PERFIL -->
+  <header class="profile-header" *ngIf="user$ | async as user">
+    <div class="profile-hero">
+      <div class="avatar">{{ user.name.charAt(0).toUpperCase() }}</div>
+      <div class="details">
+        <h1>Hola, {{ user.name }}</h1>
+        <p class="email">{{ user.email }}</p>
+        <div class="badges">
+          <span class="role-badge" *ngFor="let role of user.roles">{{ role }}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="profile-content">
+    <section class="purchases-section">
+      <div class="section-header">
+        <h2>Mis Entradas</h2>
+        <p>Aquí tienes todas tus compras y tickets activos.</p>
+      </div>
+
+      <!-- LOADING -->
+      <div class="loading-state" *ngIf="isLoading()">
+        <div class="spinner"></div>
+        <p>Cargando tus entradas...</p>
+      </div>
+
+      <!-- ERROR -->
+      <div class="error-state" *ngIf="loadError() && !isLoading()">
+        <span>⚠</span>
+        <p>No se pudieron cargar tus compras. Inténtalo de nuevo.</p>
+      </div>
+
+      <!-- SIN COMPRAS -->
+      <div class="empty-state" *ngIf="!isLoading() && !loadError() && purchases().length === 0">
+        <span class="empty-icon">🎟️</span>
+        <h3>Aún no tienes entradas</h3>
+        <p>Explora nuestros eventos y consigue tu primera experiencia.</p>
+        <a routerLink="/" class="btn btn-primary">Ver Eventos</a>
+      </div>
+
+      <!-- LISTA DE COMPRAS -->
+      <div class="purchases-grid" *ngIf="!isLoading() && !loadError() && purchases().length > 0">
+        <div class="purchase-card" *ngFor="let purchase of purchases()">
+
+          <!-- Cabecera de la compra -->
+          <div class="purchase-header">
+            <div class="event-mini-thumb" [style.background]="getGradient(purchase.eventId)"></div>
+            <div class="event-info">
+              <h3>{{ purchase.eventTitle }}</h3>
+              <p class="date">📅 {{ purchase.eventDate }}</p>
+            </div>
+            <div class="status-pill" [ngClass]="getStatusClass(purchase.status)">
+              {{ getStatusLabel(purchase.status) }}
+            </div>
+          </div>
+
+          <!-- Detalles de la compra -->
+          <div class="purchase-details">
+            <div class="detail-row">
+              <span>Cantidad</span>
+              <span class="value">{{ purchase.quantity }} entrada(s)</span>
+            </div>
+            <div class="detail-row">
+              <span>Total pagado</span>
+              <span class="value accent">{{ purchase.totalPrice | currency:'EUR' }}</span>
+            </div>
+            <div class="detail-row">
+              <span>Fecha de compra</span>
+              <span class="value">{{ purchase.purchasedAt }}</span>
+            </div>
+          </div>
+
+          <!-- Toggle tickets -->
+          <button
+            class="tickets-toggle"
+            [id]="'btn-tickets-' + purchase.id"
+            (click)="toggleTickets(purchase.id)">
+            <span>🎫 Ver mis {{ purchase.tickets.length }} entrada(s)</span>
+            <span class="chevron" [class.open]="expandedPurchaseId() === purchase.id">▾</span>
+          </button>
+
+          <!-- Panel de tickets expandible -->
+          <div class="tickets-panel" *ngIf="expandedPurchaseId() === purchase.id">
+            <div class="ticket-item" *ngFor="let ticket of purchase.tickets; let i = index">
+              <div class="ticket-left">
+                <div class="ticket-num">Entrada #{{ i + 1 }}</div>
+                <code class="ticket-id">{{ ticket.id.substring(0, 8) }}...</code>
+                <div class="ticket-status" [class.used]="ticket.isUsed">
+                  <span *ngIf="!ticket.isUsed">✓ Válida — Lista para usar</span>
+                  <span *ngIf="ticket.isUsed">✕ Ya utilizada</span>
+                </div>
+              </div>
+              <div class="ticket-qr">
+                <img
+                  [src]="getQrImageUrl(ticket.qrCodeHash)"
+                  [alt]="'QR Entrada #' + (i + 1)"
+                  class="qr-image"
+                  [class.qr-used]="ticket.isUsed"
+                  loading="lazy"
+                />
+                <p class="qr-label">Muestra este QR en la puerta</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

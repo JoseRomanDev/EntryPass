@@ -1,0 +1,26 @@
+<header class="navbar">
+  <div class="container navbar-container">
+    <!-- Logo -->
+    <a routerLink="/" class="brand">
+      <img src="logo.png" alt="EntryPass Logo" class="brand-logo">
+    </a>
+
+
+
+    <!-- Actions -->
+    <div class="nav-actions">
+
+
+      @if (isAuthenticated()) {
+        @if (isAdmin()) {
+          <a routerLink="/admin/events" class="nav-link admin-brand">⭐ Panel de Gestión</a>
+        }
+        <a routerLink="/profile" class="nav-link">Mi Perfil</a>
+        <button class="btn btn-ghost" (click)="logout()">Cerrar Sesión</button>
+      } @else {
+        <a routerLink="/auth/login" class="nav-link">Iniciar Sesión</a>
+        <a routerLink="/auth/register" class="btn btn-primary btn-sm register-btn">Registrarse</a>
+      }
+    </div>
+  </div>
+</header>

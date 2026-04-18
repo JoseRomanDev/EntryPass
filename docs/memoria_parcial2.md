@@ -206,13 +206,16 @@ Todo el diseño del front y back se implementa siguiendo la pauta de **"Flujo ce
 
 ## 9. Manual de Uso (Aproximación UI)
 
-*Esta sección se enriquecerá en el documento final con capturas reales cuando el portal web definitivo esté terminado.*
+La interfaz de **EntryPass** se ha rediseñado siguiendo una estética de alta fidelidad (High-Fidelity) caracterizada por:
 
-Aunque la plataforma es intuitiva por diseño, se considerarán manuales integrados para flujos no convencionales:
+*   **Esquema de Color**: Fondo negro absoluto (`#000000`) con acentos en **Cyan Teatral** (`#26b1c4`), proporcionando un alto contraste y un aspecto premium propio de aplicaciones de eventos nocturnos y festivales.
+*   **Branding**: Integración de logo oficial con bordes redondeados y bordes iluminados por el color corporativo.
+*   **Interactividad**: Uso de gradientes radiales oscuros, efectos de desenfoque (blur) en overlays y transiciones suaves para mejorar la experiencia de usuario.
+*   **Simetría y Orden**: Cuadrícula de eventos simétrica con tarjetas "burbuja" (28px de radio) que unifican el contenido visual independientemente de la longitud de los títulos.
 
-* **Escaneo en Puerta (Validación):** 
-  *(Placeholder Imagen: Vista móvil organizador. Pantalla escáner abierta enfocando un QR).*
-  **Regla de usabilidad:** El escáner solo tiene dos respuestas de color para evitar confusión humana en ambientes oscuros. **Fondo Verde** y sonido "ding": Ticket válido, puede entrar. **Fondo Rojo** vibrando: Error, entrada caducada, inexistente o ya sellada. No se ofrece más información irrelevante al portero técnico, priorizando la velocidad de cola.
+**Escaneo en Puerta (Validación):** 
+*(Placeholder Imagen: Vista móvil organizador. Pantalla escáner abierta enfocando un QR).*
+**Regla de usabilidad:** El escáner solo tiene dos respuestas de color para evitar confusión humana en ambientes oscuros. **Fondo Verde** y sonido "ding": Ticket válido, puede entrar. **Fondo Rojo** vibrando: Error, entrada caducada, inexistente o ya sellada.
 
 ---
 
@@ -248,9 +251,10 @@ A fecha de la presente entrega, se han implementado las siguientes bases fundame
 | **Fase 2 – Dominio y Aplicación** | Definición de entidades, interfaces y primeros casos de uso. | ✅ Completada |
 | **Fase 3 – API REST** | Autenticación JWT y lógica core robustecida en infraestructura. | ✅ Completada |
 | **Fase 4 – Gestión de Tickets y QR** | Generación asíncrona de QR y envío de email mediante RabbitMQ. | ✅ Completada |
-| **Fase 5 – Pagos y Validación Física** | Generación del núcleo del simulador de transacciones económicas (arquitectura hexagonal) de forma blindada, más endpoint formalizado (`valid` -> `used`) listo para verificar el scanner. | ✅ Completada |
-| **Fase 6 – Frontend SPA** | Pantallas responsivas de Angular: eventos, compra interactiva y perfil. | ⏳ Pendiente |
-| **Fase 7 – Testing final y QA** | Verificación unitaria progresiva de todos los manejadores en Backend, listos para la capa visual general de Testing. | ⏳ En Progreso / Testing |
+| **Fase 6 – Frontend SPA** | Pantallas responsivas de Angular: eventos, compra interactiva y perfil. | ✅ Rediseño Completado |
+| **Fase 6.1 – Lógica de Compra** | Implementación del checkout funcional y conexión con la pasarela de pago del backend. | ⏳ Próxima Mejora |
+| **Fase 6.2 – Gestión de Perfil** | Visualización de entradas compradas y códigos QR para el usuario. | ⏳ Pendiente |
+| **Fase 7 – Testing final y QA** | Verificación unitaria progresiva de todos los manejadores en Backend y flujos de Front. | ⏳ En Progreso / Testing |
 
 ---
 

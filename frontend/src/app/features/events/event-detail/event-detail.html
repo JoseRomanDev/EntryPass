@@ -1,0 +1,193 @@
+<!-- VISTA PRINCIPAL DEL EVENTO -->
+<div class="detail-container" *ngIf="!isLoading && event; else loading">
+  <div class="back-nav">
+    <a routerLink="/" class="back-link">
+      <span class="icon">←</span> Volver a eventos
+    </a>
+  </div>
+
+  <!-- HERO DEL EVENTO -->
+  <div class="event-hero">
+    <div class="event-image-container" [style.background]="getGradient(event.id)">
+      <div class="overlay"></div>
+      <div class="event-header-content">
+        <span class="category-badge">Evento Destacado</span>
+        <h1>{{ event.title }}</h1>
+        <div class="event-meta">
+          <div class="meta-item">
+            <span class="icon">📅</span>
+            <span>{{ event.date | date:'fullDate':'':'es' }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="icon">🕒</span>
+            <span>{{ event.date | date:'HH:mm' }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="icon">📍</span>
+            <span>Estadio Central, Madrid</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID PRINCIPAL -->
+  <div class="detail-grid">
+    <div class="main-content">
+      <section class="description">
+        <h2>Sobre este evento</h2>
+        <p>{{ event.description }}</p>
+        <p>Prepárate para una experiencia inolvidable. El acceso se permitirá 2 horas antes del inicio. Por favor, ten tu entrada QR lista en tu dispositivo móvil para un acceso rápido y seguro.</p>
+      </section>
+
+      <section class="highlights">
+        <h2>Qué incluye tu entrada</h2>
+        <ul class="highlights-list">
+          <li><span class="check">✓</span> Acceso garantizado al recinto</li>
+          <li><span class="check">✓</span> Seguro de cancelación básico</li>
+          <li><span class="check">✓</span> Soporte prioritario 24/7</li>
+          <li><span class="check">✓</span> Entrada digital en formato QR</li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- SIDEBAR: CARD DE COMPRA -->
+    <div class="sidebar">
+      <div class="checkout-card">
+        <div class="price-section">
+          <span class="label">Precio por entrada</span>
+          <span class="amount">{{ event.price | currency:'EUR' }}</span>
+        </div>
+
+        <div class="capacity-section">
+          <div class="capacity-info">
+            <span class="label">Disponibilidad</span>
+            <span class="value">{{ event.capacity }} plazas</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress" style="width: 75%"></div>
+          </div>
+          <p class="warning" *ngIf="event.capacity < 100">¡Quedan pocas entradas!</p>
+        </div>
+
+        <!-- SELECTOR DE CANTIDAD -->
+        <div class="quantity-section">
+          <span class="label">Cantidad de entradas</span>
+          <div class="quantity-selector">
+            <button class="qty-btn" id="qty-decrease" (click)="decreaseQuantity()" [disabled]="quantity() === 1">−</button>
+            <span class="qty-value">{{ quantity() }}</span>
+            <button class="qty-btn" id="qty-increase" (click)="increaseQuantity()" [disabled]="quantity() === 4">+</button>
+          </div>
+          <span class="qty-hint">Máximo 4 entradas por compra</span>
+        </div>
+
+        <!-- TOTAL Y BOTÓN -->
+        <div class="total-section">
+          <div class="total-row">
+            <span>Total</span>
+            <span class="total-amount">{{ totalPrice() | currency:'EUR' }}</span>
+          </div>
+        </div>
+
+        <button id="btn-buy" class="btn btn-primary buy-btn" (click)="openCheckout()" [disabled]="event.capacity === 0">
+          <span *ngIf="event.capacity > 0">Comprar Entradas →</span>
+          <span *ngIf="event.capacity === 0">Entradas Agotadas</span>
+        </button>
+
+        <p class="security-note">
+          <span class="icon">🔒</span> Compra 100% segura y encriptada
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING STATE -->
+<ng-template #loading>
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando los detalles del evento...</p>
+  </div>
+</ng-template>
+
+
+<!-- ================================
+     MODAL DE CONFIRMACIÓN DE COMPRA
+     ================================ -->
+<div class="modal-overlay" *ngIf="showModal()" (click)="closeModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+
+    <!-- ESTADO: ÉXITO -->
+    <ng-container *ngIf="purchaseSuccess(); else checkoutForm">
+      <div class="modal-success">
+        <div class="success-icon">✓</div>
+        <h2>¡Compra Confirmada!</h2>
+        <p class="success-msg">
+          Has comprado <strong>{{ purchaseSuccess()!.quantity }} entrada(s)</strong> por
+          <strong>{{ purchaseSuccess()!.totalPrice | currency:'EUR' }}</strong>.
+        </p>
+        <p class="success-email">
+          📧 Recibirás tus entradas QR en tu correo electrónico en breve.
+        </p>
+        <div class="success-actions">
+          <button id="btn-go-profile" class="btn btn-primary" (click)="goToProfile()">
+            Ver mis entradas
+          </button>
+          <button id="btn-close-success" class="btn btn-outline" (click)="closeModal()">
+            Seguir explorando
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ESTADO: FORMULARIO DE CONFIRMACIÓN -->
+    <ng-template #checkoutForm>
+      <div class="modal-header">
+        <h2>Confirmar compra</h2>
+        <button id="btn-modal-close" class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+
+      <div class="modal-body" *ngIf="event">
+        <div class="modal-event-info">
+          <div class="modal-event-thumb" [style.background]="getGradient(event.id)"></div>
+          <div>
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.date | date:'fullDate':'':'es' }}</p>
+          </div>
+        </div>
+
+        <div class="modal-summary">
+          <div class="summary-row">
+            <span>Entradas</span>
+            <span>{{ quantity() }} × {{ event.price | currency:'EUR' }}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total a pagar</span>
+            <span class="highlight">{{ totalPrice() | currency:'EUR' }}</span>
+          </div>
+        </div>
+
+        <!-- ERROR -->
+        <div class="modal-error" *ngIf="purchaseError()">
+          <span class="error-icon">⚠</span>
+          {{ purchaseError() }}
+        </div>
+
+        <p class="modal-disclaimer">
+          🔒 Pago seguro simulado. Recibirás las entradas en tu correo.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btn-cancel" class="btn btn-outline" (click)="closeModal()" [disabled]="purchasing()">
+          Cancelar
+        </button>
+        <button id="btn-confirm-purchase" class="btn btn-primary" (click)="confirmPurchase()" [disabled]="purchasing()">
+          <span *ngIf="!purchasing()">Confirmar y pagar</span>
+          <span *ngIf="purchasing()" class="loading-dots">Procesando<span>...</span></span>
+        </button>
+      </div>
+    </ng-template>
+
+  </div>
+</div>

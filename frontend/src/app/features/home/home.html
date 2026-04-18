@@ -1,0 +1,170 @@
+<!-- ===== HERO SECTION ===== -->
+<section class="hero section">
+  <div class="container hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Nuevos eventos cada semana
+    </div>
+
+    <h1 class="heading-xl hero-title">
+      Descubre experiencias<br>
+      <span class="text-accent">únicas</span>
+    </h1>
+
+    <p class="text-body hero-subtitle">
+      Tu próximo momento inolvidable está a un click. Conciertos, festivales, teatro y mucho más.
+    </p>
+
+    <div class="hero-actions">
+      <a [routerLink]="['/']" class="btn btn-primary hero-btn">Explorar Eventos &nbsp; <span class="arrow">→</span></a>
+      <a href="#eventos" class="btn btn-outline hero-btn">Ver Calendario</a>
+    </div>
+
+    <!-- Featured Event Card -->
+    <div class="featured-card card fade-in-up">
+      <div class="featured-image">
+        <div class="featured-badge-container">
+          <span class="badge featured-badge-top">EVENTO DESTACADO</span>
+        </div>
+      </div>
+      <div class="featured-content">
+        <h2 class="featured-title">Festival Aurora 2026</h2>
+        <div class="featured-meta">
+          <span class="meta-item"><span class="icon">📅</span> 15-17 Mayo</span>
+          <span class="meta-item"><span class="icon">📍</span> Madrid</span>
+        </div>
+      </div>
+      <div class="featured-footer">
+        <div class="featured-avatars">
+          <div class="avatar-group">
+            <span class="avatar-circle" style="background: #24a8ae">A</span>
+            <span class="avatar-circle" style="background: #1e8e9e">B</span>
+            <span class="avatar-circle" style="background: #125e68">C</span>
+          </div>
+          <span class="avatar-count">+2.4k interesados</span>
+        </div>
+        <div class="featured-price">
+          Desde <strong class="text-white">45€</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EVENTOS POPULARES ===== -->
+<section class="section" id="eventos">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="heading-lg">Eventos Populares</h2>
+      <p class="text-body">No te pierdas las experiencias más esperadas del año</p>
+    </div>
+
+
+
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" class="search-input" placeholder="Buscar por nombre o descripción..." (input)="updateSearch($event)">
+      </div>
+    </div>
+
+    <!-- Grid de Eventos -->
+    <div class="events-grid">
+      @if (loading()) {
+        <div class="loading-state">
+          <p class="text-secondary">Cargando eventos...</p>
+        </div>
+      } @else if (filteredEvents().length === 0) {
+        <div class="empty-state">
+          <p class="text-secondary">No hay eventos disponibles en este momento.</p>
+        </div>
+      } @else {
+        @for (event of filteredEvents(); track event.id; let i = $index) {
+          <div class="card event-card">
+            <div class="event-image" [style.background]="getGradient(i)">
+
+              <button class="event-fav">♥</button>
+              
+              <div class="event-hover-overlay" [routerLink]="['/events', event.id]">
+                <span class="view-details-badge">Ver Detalles</span>
+              </div>
+            </div>
+            <div class="event-info">
+              <h3 class="event-title">
+                <a [routerLink]="['/events', event.id]" class="title-link">{{ event.title }}</a>
+              </h3>
+              <div class="event-meta">
+                <span>📅 {{ formatDate(event.date) }}</span>
+              </div>
+              <div class="event-meta">
+                <span>📍 España</span>
+              </div>
+              <div class="event-bottom">
+                <div class="event-price">
+                  Desde
+                  <strong>{{ event.price }}€</strong>
+                </div>
+                <button [routerLink]="['/events', event.id]" class="buy-btn">Comprar</button>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== CARACTERÍSTICAS ===== -->
+<section class="section features-section">
+  <div class="container">
+    <div class="features-grid">
+      <div class="card feature-card">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-2 10h8l-2 10"/></svg>
+        </div>
+        <h3 class="heading-md">Compra Instantánea</h3>
+        <p class="text-sm">Entradas al instante en tu móvil</p>
+      </div>
+      <div class="card feature-card">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+        </div>
+        <h3 class="heading-md">100% Seguro</h3>
+        <p class="text-sm">Garantía de autenticidad</p>
+      </div>
+      <div class="card feature-card">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H4v4"/><path d="M2 12h20"/><path d="M7 12V8"/><path d="M17 12V8"/><path d="M2 12v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8"/><path d="M12 2v20"/><path d="M12 8a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+        </div>
+        <h3 class="heading-md">Ofertas Exclusivas</h3>
+        <p class="text-sm">Descuentos para miembros</p>
+      </div>
+      <div class="card feature-card">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        </div>
+        <h3 class="heading-md">Alertas Personalizadas</h3>
+        <p class="text-sm">Nunca te pierdas un evento</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEWSLETTER ===== -->
+<section class="section newsletter-section">
+  <div class="container">
+    <div class="newsletter-card card">
+      <div class="newsletter-layout">
+        <div class="newsletter-content">
+          <h2 class="heading-lg">No te pierdas nada</h2>
+          <p class="text-body">Únete a más de 500.000 personas que ya reciben las mejores ofertas y preventa exclusiva de eventos.</p>
+        </div>
+        <div class="newsletter-form">
+          <div class="input-group">
+            <input type="email" class="input newsletter-input" placeholder="tu@email.com">
+            <button class="btn btn-primary newsletter-btn">Suscribirme &nbsp; →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
