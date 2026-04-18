@@ -18,8 +18,13 @@ export class Login {
   email = '';
   password = '';
 
+  readonly showPassword = signal(false);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+
+  togglePassword(): void {
+    this.showPassword.update(v => !v);
+  }
 
   onSubmit(): void {
     this.loading.set(true);

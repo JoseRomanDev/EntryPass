@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EventService } from '../../../core/services/event.service';
 import { PurchaseService } from '../../../core/services/purchase.service';
@@ -10,7 +10,7 @@ import { PurchaseResponse } from '../../../core/models/purchase.model';
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, CurrencyPipe],
+  imports: [RouterLink, CurrencyPipe, DatePipe],
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.css'
 })
@@ -21,8 +21,8 @@ export class EventDetailComponent implements OnInit {
   private readonly purchaseService = inject(PurchaseService);
   private readonly authService = inject(AuthService);
 
-  event: Event | null = null;
-  isLoading = true;
+  readonly event = signal<Event | null>(null);
+  readonly isLoading = signal(true);
 
   // --- Signals de estado de la compra ---
   readonly quantity = signal(1);
@@ -32,20 +32,21 @@ export class EventDetailComponent implements OnInit {
   readonly purchaseSuccess = signal<PurchaseResponse | null>(null);
 
   // --- Computed ---
-  readonly totalPrice = computed(() =>
-    this.event ? this.event.price * this.quantity() : 0
-  );
+  readonly totalPrice = computed(() => {
+    const ev = this.event();
+    return ev ? ev.price * this.quantity() : 0;
+  });
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.eventService.getEventById(id).subscribe({
         next: (event) => {
-          this.event = event;
-          this.isLoading = false;
+          this.event.set(event);
+          this.isLoading.set(false);
         },
         error: () => {
-          this.isLoading = false;
+          this.isLoading.set(false);
         }
       });
     }
@@ -81,22 +82,21 @@ export class EventDetailComponent implements OnInit {
   }
 
   confirmPurchase(): void {
-    if (!this.event || this.purchasing()) return;
+    const ev = this.event();
+    if (!ev || this.purchasing()) return;
 
     this.purchasing.set(true);
     this.purchaseError.set(null);
 
     this.purchaseService.purchase({
-      eventId: this.event.id,
+      eventId: ev.id,
       quantity: this.quantity()
     }).subscribe({
       next: (response) => {
         this.purchasing.set(false);
         this.purchaseSuccess.set(response);
         // Actualizar stock local visualmente
-        if (this.event) {
-          this.event = { ...this.event, capacity: this.event.capacity - this.quantity() };
-        }
+        this.event.set({ ...ev, capacity: ev.capacity - this.quantity() });
       },
       error: (err) => {
         this.purchasing.set(false);
@@ -126,3 +126,4 @@ export class EventDetailComponent implements OnInit {
     return `linear-gradient(135deg, ${c1}, ${c2})`;
   }
 }
+
