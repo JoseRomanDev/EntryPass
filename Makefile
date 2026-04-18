@@ -8,6 +8,8 @@ help:
 	@echo "Comandos disponibles:"
 	@echo "  make up      - Levanta todos los contenedores en segundo plano"
 	@echo "  make down    - Detiene y elimina los contenedores"
+	@echo "  make start   - Activa/reanuda los contenedores detenidos"
+	@echo "  make stop    - Pausa/detiene los contenedores sin eliminarlos"
 	@echo "  make build   - Reconstruye las imágenes de Docker"
 	@echo "  make php     - Accede a la terminal del Backend (Symfony)"
 	@echo "  make node    - Accede a la terminal del Frontend (Angular)"
@@ -16,13 +18,19 @@ help:
 	@echo "  make seed    - Inserta el usuario administrador inicial"
 
 # --- Opciones de Infraestructura ---
-.PHONY: up down build logs
+.PHONY: up down start stop build logs
 
 up:
 	docker compose up -d
 
 down:
 	docker compose down
+
+start:
+	docker compose start
+
+stop:
+	docker compose stop
 
 build:
 	docker compose build
