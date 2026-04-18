@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EventService } from '../../../core/services/event.service';
 import { PurchaseService } from '../../../core/services/purchase.service';
@@ -10,7 +11,7 @@ import { PurchaseResponse } from '../../../core/models/purchase.model';
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe],
+  imports: [RouterLink, CurrencyPipe, DatePipe, FormsModule],
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.css'
 })
@@ -81,29 +82,51 @@ export class EventDetailComponent implements OnInit {
     }
   }
 
+  // --- Signals de tarjeta mock (Stripe) ---
+  readonly cardName = signal('');
+  readonly cardNumber = signal('');
+  readonly cardExpiry = signal('');
+  readonly cardCvc = signal('');
+
+  readonly isCardValid = computed(() => {
+    const number = this.cardNumber().replace(/\s/g, '');
+    const expiry = this.cardExpiry().replace(/\s/g, '');
+    const cvc = this.cardCvc().trim();
+    const name = this.cardName().trim();
+    
+    // Validación estricta para demostrar profesionalidad
+    return number.length >= 16 && 
+           expiry.length >= 4 && 
+           cvc.length >= 3 && 
+           name.length > 3;
+  });
+
   confirmPurchase(): void {
     const ev = this.event();
-    if (!ev || this.purchasing()) return;
+    if (!ev || this.purchasing() || !this.isCardValid()) return;
 
     this.purchasing.set(true);
     this.purchaseError.set(null);
 
-    this.purchaseService.purchase({
-      eventId: ev.id,
-      quantity: this.quantity()
-    }).subscribe({
-      next: (response) => {
-        this.purchasing.set(false);
-        this.purchaseSuccess.set(response);
-        // Actualizar stock local visualmente
-        this.event.set({ ...ev, capacity: ev.capacity - this.quantity() });
-      },
-      error: (err) => {
-        this.purchasing.set(false);
-        const msg = err?.error?.error ?? 'Ha ocurrido un error. Inténtalo de nuevo.';
-        this.purchaseError.set(msg);
-      }
-    });
+    // Simulated Stripe Processing Delay (1.5 seconds)
+    setTimeout(() => {
+      this.purchaseService.purchase({
+        eventId: ev.id,
+        quantity: this.quantity()
+      }).subscribe({
+        next: (response) => {
+          this.purchasing.set(false);
+          this.purchaseSuccess.set(response);
+          // Actualizar stock local visualmente
+          this.event.set({ ...ev, capacity: ev.capacity - this.quantity() });
+        },
+        error: (err) => {
+          this.purchasing.set(false);
+          const msg = err?.error?.error ?? 'El banco ha rechazado la operación. Inténtalo de nuevo.';
+          this.purchaseError.set(msg);
+        }
+      });
+    }, 1500);
   }
 
   goToProfile(): void {

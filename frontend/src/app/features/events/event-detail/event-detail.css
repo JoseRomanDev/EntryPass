@@ -280,9 +280,136 @@
 }
 
 .security-note {
-  font-size: 0.8rem;
-  color: var(--text-muted);
+/* ========================================
+   STRIPE MOCK CHECKOUT STYLES
+   ======================================== */
   text-align: center;
 }
 
+.stripe-body { padding-top: 0; }
 
+.stripe-order-summary {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  border: 1px solid var(--border-subtle);
+}
+
+.event-thumb-small {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.summary-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-details h3 {
+  font-size: 1rem;
+  margin-bottom: 2px;
+  color: var(--text-primary);
+}
+
+.summary-details p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.stripe-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.stripe-form h4 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.stripe-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.stripe-field label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.stripe-field input {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.95rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.stripe-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(36, 168, 174, 0.15);
+}
+
+.stripe-field input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card-input-wrapper { position: relative; }
+.card-input-wrapper input {
+  padding-right: 2.5rem;
+  letter-spacing: 2px;
+}
+.card-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.stripe-field-row {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.stripe-field.half { flex: 1; }
+
+.stripe-disclaimer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: var(--space-xl);
+  color: var(--text-muted);
+}
+
+.stripe-pay-btn {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+}

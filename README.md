@@ -180,7 +180,14 @@ Puedes consultar el detalle del proyecto y las guías de uso en los siguientes e
 * **Simulación de Pasarela de Pagos:**
   * Incorporación de una simulación de cobro realista en el backend antes de autorizar y encolar la creación definitiva de los tickets. Implementado mediante Patrón de Diseño Hexagonal (Ports & Adapters) garantizando desacoplamiento total. Todo fuertemente respaldado por testing en **PHPUnit** y tests funcionales para asegurar la inviolabilidad de los datos en fallos transaccionales.
 * **Rediseño Estético de Alta Fidelidad (UI/UX):**
-  * Transformación integral de la identidad visual de la aplicación. Migración a un sistema de diseño basado en fondo negro absoluto y acentos Cyan (`#26b1c4`), con una arquitectura de componentes (Navbar, Home, Footer) optimizada para una experiencia fluida y premium.
+  * Transformación integral de la identidad visual de la aplicación. Migración a un sistema de diseño basado en fondo negro absoluto y acentos Cyan (`#26b1c4`), con una arquitectura de componentes optimizada para una experiencia fluida y premium.
+* **Autenticación Resiliente e Interceptores:**
+  * Implementación de Interceptores HTTP reactivos para gestionar el cierre de sesión transparente frente a tokens caducados, reparando errores `401 Unauthorized` en rutas públicas y eliminando pantallas de carga infinitas.
+  * Mejoras drásticas de UX en componentes: visualización de contraseña mediante SVG en login y redirecciones automáticas (`Router Guards`).
+* **Simulación Avanzada de Pasarela de Pagos (Stripe Mock):**
+  * Construcción de una interfaz de Checkout hiperrealista encapsulando _Stripe Elements_ directamente en Angular, dotando a la simulación de confirmación y procesamiento con _fake delays_ que consolidan un aspecto profesional.
+* **Panel de Administración Refinado:**
+  * Refactorización del **Dashboard** administrativo eliminando por completo alertas nativas del navegador a favor de modales customizados de Alta y Baja Lógica. Sustitución total de emojis OS por iconografía SVG elegante adaptada al *Dark Mode*.
 
 ##  Implementaciones Futuras (Roadmap)
 

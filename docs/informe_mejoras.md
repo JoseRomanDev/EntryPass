@@ -9,8 +9,9 @@ Este informe detalla los avances logrados y las mejoras introducidas en la plata
 El frontend ha pasado de ser un MVP (Mínimo Producto Viable) a una interfaz **High-Fidelity** con una experiencia de usuario premium.
 
 *   **Identidad Visual Premium**: Migración a una paleta de colores **Dark/Cyan/Teal**. Uso de fondos negros puros (`#000000`) y acentos en Cyan (`#26b1c4`), proporcionando una estética moderna y profesional.
-*   **Gestión de Estado Reactiva con Signals**: Sustitución de flujos tradicionales por **Angular Signals** en componentes críticos como el modal de *Checkout*. Esto garantiza una reactividad instantánea al seleccionar cantidad de tickets o validar stock.
-*   **Flujo de Checkout Optimizado**: Implementación de un modal inteligente que gestiona la compra de forma fluida, incluyendo validaciones en tiempo real y persistencia de intención de compra tras el login.
+*   **Gestión de Estado Reactiva con Signals (Zoneless)**: Sustitución de flujos de detección convencionales por **Angular Signals**. Esto ha mitigado bugs críticos de cargas infinitas y proporciona reactividad instantánea al interactuar con el stock, sin depender de *zone.js*.
+*   **Checkout Hiperrealista (Stripe Mock UI)**: Implementación de un modal avanzado inspirado en las interfaces nativas de *Stripe*, que cuenta con validación estricta (16 dígitos) simulando una pasarela de conexión bancaria con loaders de bloqueo reactivos.
+*   **Gestión Administrativa In-Place**: Creados modales asíncronos propios en el panel del perfil que erradican componentes arcaicos de *confirm* del navegador, y proveen "Bajas" y "Altas" bi-direccionales de eventos sin parpadeos visuales en la interfaz.
 *   **Panel de Usuario Consolidado**: La sección "Mis Entradas" ahora permite visualizar historial de compras y renderizar códigos QR dinámicos individualizados para cada entrada.
 
 ##  2. Mejoras en el Backend (Arquitectura y Funcionalidad)

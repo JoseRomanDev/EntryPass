@@ -165,8 +165,9 @@ La plataforma descansa sobre PostgreSQL dividiendo la carga de la siguiente mane
 La interfaz de **EntryPass** se ha rediseñado siguiendo una estética de alta fidelidad (High-Fidelity):
 
 *   **Esquema de Color**: Fondo negro absoluto (`#000000`) con acentos en **Cyan Teatral** (`#26b1c4`).
-*   **Interactividad**: Uso de gradientes radiales oscuros, *glassmorphism* (blur effect) en los modales de interacciones de pago con overlays oscuros y transiciones reactivas suavizadas.
-*   **Códigos QR Dinámicos (Perfil):** El perfil del usuario expone su compra descompuesta en *Tickets* individuales renderizando un código QR 100% real de alto contraste desde el `ticket_hash` almacenado de forma segura en Base de Datos para asegurar la visibilidad en el escaneo nocturno.
+*   **Interactividad y Checkout Premium**: Uso de gradientes radiales oscuros, *glassmorphism* (blur effect) y un novedoso componente de **Checkout Simulado** (Stripe Mock UI) que replica el comportamiento de las mejores pasarelas de pago, con validaciones estrictas y latencias intencionadas para crear una sensación de máxima profesionalidad.
+*   **Códigos QR Dinámicos (Perfil):** El perfil del usuario expone su compra descompuesta en *Tickets* individuales renderizando un código QR 100% real de alto contraste desde el `ticket_hash` almacenado de forma segura en Base de Datos.
+*   **Gestión Administrativa Fluida**: El Dashboard para organizadores erradica el uso de controles genéricos del navegador a favor de modales customizados y SVG puro. Se introduce la **Baja y Alta Lógica** asíncrona, gestionando la visibilidad del evento con _Signals_ en tiempo real sin recargar pantallas.
 
 ---
 
@@ -187,10 +188,10 @@ A fecha de la presente memoria, se han completado e interconectado plenamente to
 - ✅ **Capa de Dominio Hexagonal:** Entidades principales y casos de uso.
 - ✅ **Flujos de Seguridad:** JWT, endpoints validados por roles en el Backend. Procesador de Pasarela transaccional.
 - ✅ **Frontend Angular SPA Plenamente Funcional:**
-  - Desarrollo SPA implementado.
-  - El **flujo de compra de alta fidelidad** está interconectado mediante un robusto Guard de Rutas, modal de Checkouts y control de aforo visual mediante Signals.
-  - La **sección de Perfil de Usuario** expone el historial real consolidando *Purchases* combinadas por Tickets dinámicos. Renderizado visual de los códigos QR listos e identificadores de estado (`Válido` o `Usado`).
-- ⏳ **Próximo Paso:** Extensión y desarrollo de la fase final de Testing (Fase 7).
+  - Desarrollo SPA implementado bajo arquitectura **Zoneless** optimizada, erradicando fallos de detección en observadores de estado mediante el uso estricto de _Angular Signals_ puros.
+  - El **flujo de compra de alta fidelidad** está asegurado mediante Interceptores de autenticación inteligentes y un rediseño de pasarela transaccional simulada (basada en *Stripe UI*).
+  - La **sección de Perfil de Usuario y Dashboard Administrativo** permite visualizar compras y administrar eventos con modales propios de Alta/Baja lógica de forma instantánea. Renderizado visual de códigos QR precisos para el control.
+- ⏳ **Próximo Paso:** Extensión y desarrollo de la fase final de Testing unitario/funcional exhaustivo y validación (QA) (Fase 7).
 
 ---
 

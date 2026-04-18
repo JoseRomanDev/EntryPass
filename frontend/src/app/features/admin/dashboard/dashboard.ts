@@ -39,20 +39,75 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  deleteEvent(id: string, title: string): void {
-    if (confirm(`¿Estás seguro de que deseas eliminar eliminar el evento "${title}"?`)) {
-      this.deletingId.set(id);
-      this.eventService.deleteEvent(id).subscribe({
-        next: () => {
-          this.events.update(current => current.filter(e => e.id !== id));
-          this.deletingId.set(null);
-        },
-        error: () => {
-          alert('No se pudo eliminar el evento. Asegúrate de que no tenga compras asociadas.');
-          this.deletingId.set(null);
-        }
-      });
-    }
+  // Modal states
+  showConfirmDelete = signal(false);
+  eventToDelete = signal<{id: string, title: string} | null>(null);
+
+  showConfirmRestore = signal(false);
+  eventToRestore = signal<{id: string, title: string} | null>(null);
+
+  openDeleteConfirm(id: string, title: string): void {
+    this.eventToDelete.set({id, title});
+    this.showConfirmDelete.set(true);
+  }
+
+  cancelDelete(): void {
+    this.showConfirmDelete.set(false);
+    this.eventToDelete.set(null);
+  }
+
+  confirmDelete(): void {
+    const ev = this.eventToDelete();
+    if (!ev) return;
+    
+    this.deletingId.set(ev.id);
+    this.showConfirmDelete.set(false);
+    
+    this.eventService.deleteEvent(ev.id).subscribe({
+      next: () => {
+        this.events.update(current => current.map(e => e.id === ev.id ? { ...e, status: false } : e));
+        this.deletingId.set(null);
+        this.eventToDelete.set(null);
+      },
+      error: () => {
+        this.error.set(`No se pudo dar de baja el evento "${ev.title}".`);
+        setTimeout(() => this.error.set(null), 4000);
+        this.deletingId.set(null);
+        this.eventToDelete.set(null);
+      }
+    });
+  }
+
+  openRestoreConfirm(id: string, title: string): void {
+    this.eventToRestore.set({id, title});
+    this.showConfirmRestore.set(true);
+  }
+
+  cancelRestore(): void {
+    this.showConfirmRestore.set(false);
+    this.eventToRestore.set(null);
+  }
+
+  confirmRestore(): void {
+    const ev = this.eventToRestore();
+    if (!ev) return;
+    
+    this.deletingId.set(ev.id); // reuse same spinner visual
+    this.showConfirmRestore.set(false);
+    
+    this.eventService.updateEvent(ev.id, { status: true }).subscribe({
+      next: () => {
+        this.events.update(current => current.map(e => e.id === ev.id ? { ...e, status: true } : e));
+        this.deletingId.set(null);
+        this.eventToRestore.set(null);
+      },
+      error: () => {
+        this.error.set(`No se pudo dar de alta el evento "${ev.title}".`);
+        setTimeout(() => this.error.set(null), 4000);
+        this.deletingId.set(null);
+        this.eventToRestore.set(null);
+      }
+    });
   }
 
   getGradient(id: string): string {
