@@ -94,23 +94,30 @@ El proyecto cuenta con un `Makefile` y está completamente dockerizado para faci
     docker compose exec node npm install
     ```
 
-4.  **Generar claves JWT:**
+4.  **Generar la Base de Datos (Migraciones):**
+    Ejecuta las migraciones de Doctrine para que se creen las tablas en PostgreSQL:
+    ```bash
+    docker compose exec php php bin/console doctrine:migrations:migrate -n
+    ```
+
+5.  **Generar claves JWT:**
     Obligatorio para que el sistema de login funcione:
     ```bash
     docker compose exec php php bin/console lexik:jwt:generate-keypair
     ```
 
-    > [!WARNING]
-    > Si el comando anterior falla, verifica que el contenedor `php` esté en estado *Running*. Puedes comprobarlo con `docker ps`.
-
-5.  **Insertar usuario administrador (Seed):**
-    Para poder probar el panel de administración en cualquier dispositivo, inserta el usuario por defecto:
+6.  **Insertar usuario administrador (Seed):**
+    Para poder probar el panel de administración, inserta el usuario por defecto en la BD:
     ```bash
     make seed
     ```
 
     > [!NOTE]
-    > Esto creará el usuario `admin@entrypass.com` con la contraseña `Admin123!`. Si el usuario ya existe, el comando simplemente te informará de ello.
+    > Esto creará el usuario `admin@entrypass.com` con la contraseña `Admin123!`.
+
+7.  **Acceder a la Plataforma:**
+    Todo listo. Abre tu navegador y dirígete a:
+    **[http://localhost:8080](http://localhost:8080)**
 
 ### Notas y Solución de Problemas
 
