@@ -7,7 +7,9 @@ use App\Application\CommandHandler\DeleteEventHandler;
 use App\Domain\Entity\Event;
 use App\Domain\Repository\EventRepositoryInterface;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class DeleteEventHandlerTest extends TestCase
 {
     public function testDeleteEventSoftDelete(): void

@@ -1,0 +1,31 @@
+# ===========================================
+# Docker Ignore - Excluir del contexto de build
+# ===========================================
+
+# Dependencias (se instalan dentro del contenedor)
+frontend/node_modules
+frontend/.angular
+frontend/dist
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+frontend/.vscode
+
+# Documentacion (no necesaria en el contenedor)
+docs
+postman
+
+# Backend (no necesario para el build del frontend/nginx)
+# El backend se monta como volumen, no se copia al contenedor
+backend/vendor
+backend/var
+
+# Otros
+security_dump.txt
+*.md
+!frontend/README.md

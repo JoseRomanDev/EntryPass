@@ -17,13 +17,16 @@ use App\Application\Port\PaymentGatewayInterface;
 use App\Domain\Exception\InsufficientCapacityException;
 use App\Domain\Exception\PurchaseLimitExceededException;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class PurchaseTicketHandlerTest extends TestCase
 {
     private $eventRepository;
     private $userRepository;
     private $purchaseRepository;
     private $bus;
+    private $paymentGateway;
     private $entityManager;
     private $handler;
 

@@ -28,6 +28,7 @@ class GetEventController extends AbstractController
             'description' => $event->getDescription(),
             'date' => $event->getDate()->format('Y-m-d H:i:s'),
             'price' => $event->getPrice(),
+            'category' => $event->getCategory(),
             'capacity' => $event->getCapacity(),
             'status' => $event->getStatus(),
         ], 200);

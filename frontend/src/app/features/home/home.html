@@ -20,34 +20,60 @@
       <a href="#eventos" class="btn btn-outline hero-btn">Ver Calendario</a>
     </div>
 
-    <!-- Featured Event Card -->
-    <div class="featured-card card fade-in-up">
-      <div class="featured-image">
-        <div class="featured-badge-container">
-          <span class="badge featured-badge-top">EVENTO DESTACADO</span>
+    <!-- Featured Events Carousel -->
+    @if (featuredEvents().length > 0) {
+      <div class="carousel-container fade-in-up">
+        <div class="carousel-track" [style.transform]="'translateX(-' + (currentSlide() * 100) + '%)'">
+          @for (event of featuredEvents(); track event.id; let i = $index) {
+            <div class="carousel-slide">
+              <div class="featured-card card">
+                <div class="featured-image" [style.background]="getGradient(i)">
+                  <div class="featured-badge-container">
+                    <span class="badge featured-badge-top">EVENTO DESTACADO</span>
+                  </div>
+                  <h2 class="featured-title">{{ event.title }}</h2>
+                  <div class="featured-meta">
+                    <span class="meta-item"><span class="icon">📅</span> {{ formatDate(event.date) }}</span>
+                    <span class="meta-item"><span class="icon">📍</span> España</span>
+                  </div>
+                </div>
+                
+                <div class="featured-footer">
+                  <div class="featured-avatars">
+                    <div class="avatar-group">
+                      <span class="avatar-circle" style="background: #24a8ae">E</span>
+                      <span class="avatar-circle" style="background: #1e8e9e">P</span>
+                      <span class="avatar-circle" style="background: #125e68">+</span>
+                    </div>
+                    <span class="avatar-count">¡Últimas entradas!</span>
+                  </div>
+                  <div class="featured-price">
+                    Desde <strong class="text-white">{{ event.price }}€</strong>
+                  </div>
+                  <button [routerLink]="['/events', event.id]" class="btn btn-primary carousel-buy-btn">Reservar ahora</button>
+                </div>
+              </div>
+            </div>
+          }
         </div>
-      </div>
-      <div class="featured-content">
-        <h2 class="featured-title">Festival Aurora 2026</h2>
-        <div class="featured-meta">
-          <span class="meta-item"><span class="icon">📅</span> 15-17 Mayo</span>
-          <span class="meta-item"><span class="icon">📍</span> Madrid</span>
-        </div>
-      </div>
-      <div class="featured-footer">
-        <div class="featured-avatars">
-          <div class="avatar-group">
-            <span class="avatar-circle" style="background: #24a8ae">A</span>
-            <span class="avatar-circle" style="background: #1e8e9e">B</span>
-            <span class="avatar-circle" style="background: #125e68">C</span>
+
+        <!-- Carousel Controls -->
+        <div class="carousel-controls">
+          <button class="control-btn prev" (click)="prevSlide()" aria-label="Anterior">←</button>
+          <div class="carousel-dots">
+            @for (dot of featuredEvents(); track $index) {
+              <button 
+                class="dot" 
+                [class.active]="$index === currentSlide()" 
+                (click)="setSlide($index)"
+                [attr.aria-label]="'Ir al evento ' + ($index + 1)">
+              </button>
+            }
           </div>
-          <span class="avatar-count">+2.4k interesados</span>
-        </div>
-        <div class="featured-price">
-          Desde <strong class="text-white">45€</strong>
+          <button class="control-btn next" (click)="nextSlide()" aria-label="Siguiente">→</button>
         </div>
       </div>
-    </div>
+    }
   </div>
 </section>
 
@@ -62,16 +88,37 @@
 
     <div class="search-container">
       <div class="search-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" class="search-input" placeholder="Buscar por nombre o descripción..." (input)="updateSearch($event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" class="search-input" aria-label="Buscar eventos" placeholder="Buscar por nombre o descripción..." (input)="updateSearch($event)">
+      </div>
+
+      <div class="filter-pills" role="group" aria-label="Filtrar por categoría">
+        <button class="pill" [class.active]="selectedCategory() === 'Todos'" [attr.aria-pressed]="selectedCategory() === 'Todos'" (click)="setCategory('Todos')" aria-label="Mostrar todos los eventos">Todos</button>
+        <button class="pill" [class.active]="selectedCategory() === 'Conciertos'" [attr.aria-pressed]="selectedCategory() === 'Conciertos'" (click)="setCategory('Conciertos')" aria-label="Filtrar por conciertos">Conciertos</button>
+        <button class="pill" [class.active]="selectedCategory() === 'Teatro'" [attr.aria-pressed]="selectedCategory() === 'Teatro'" (click)="setCategory('Teatro')" aria-label="Filtrar por teatro">Teatro</button>
+        <button class="pill" [class.active]="selectedCategory() === 'Festivales'" [attr.aria-pressed]="selectedCategory() === 'Festivales'" (click)="setCategory('Festivales')" aria-label="Filtrar por festivales">Festivales</button>
+        <button class="pill" [class.active]="selectedCategory() === 'Otros'" [attr.aria-pressed]="selectedCategory() === 'Otros'" (click)="setCategory('Otros')" aria-label="Filtrar por otras categorías">Otros</button>
       </div>
     </div>
 
     <!-- Grid de Eventos -->
-    <div class="events-grid">
+    <div class="events-grid" aria-live="polite">
       @if (loading()) {
-        <div class="loading-state">
-          <p class="text-secondary">Cargando eventos...</p>
+        <div class="events-grid" aria-hidden="true">
+          @for (i of [1,2,3,4,5,6]; track i) {
+            <div class="card event-card">
+              <div class="event-image skeleton"></div>
+              <div class="event-info">
+                <div class="skeleton skeleton-title" style="width: 80%"></div>
+                <div class="skeleton skeleton-text" style="width: 40%"></div>
+                <div class="skeleton skeleton-text" style="width: 60%"></div>
+                <div class="event-bottom">
+                  <div class="skeleton skeleton-text" style="width: 30%"></div>
+                  <div class="skeleton" style="width: 80px; height: 32px; border-radius: 6px;"></div>
+                </div>
+              </div>
+            </div>
+          }
         </div>
       } @else if (filteredEvents().length === 0) {
         <div class="empty-state">
@@ -82,7 +129,7 @@
           <div class="card event-card">
             <div class="event-image" [style.background]="getGradient(i)">
 
-              <button class="event-fav">♥</button>
+              <button class="event-fav" aria-label="Añadir a favoritos">♥</button>
               
               <div class="event-hover-overlay" [routerLink]="['/events', event.id]">
                 <span class="view-details-badge">Ver Detalles</span>
@@ -160,7 +207,7 @@
         </div>
         <div class="newsletter-form">
           <div class="input-group">
-            <input type="email" class="input newsletter-input" placeholder="tu@email.com">
+            <input type="email" class="input newsletter-input" aria-label="Correo electrónico para newsletter" placeholder="tu@email.com">
             <button class="btn btn-primary newsletter-btn">Suscribirme &nbsp; →</button>
           </div>
         </div>

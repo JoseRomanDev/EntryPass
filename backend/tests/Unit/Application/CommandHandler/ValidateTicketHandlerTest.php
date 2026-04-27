@@ -7,7 +7,9 @@ use App\Application\CommandHandler\ValidateTicketHandler;
 use App\Domain\Entity\Ticket;
 use App\Domain\Repository\TicketRepositoryInterface;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class ValidateTicketHandlerTest extends TestCase
 {
     private $ticketRepository;

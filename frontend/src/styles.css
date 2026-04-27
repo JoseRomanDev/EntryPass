@@ -297,7 +297,7 @@ input, textarea {
 
 /* --- SCROLLBAR --- */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -305,13 +305,38 @@ input, textarea {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-elevated);
+  background: #222;
   border-radius: var(--radius-full);
+  border: 2px solid var(--bg-primary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-subtle);
+  background: var(--accent);
 }
+
+/* --- SKELETON ANIMATION --- */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #121212 25%,
+    #1a1a1a 50%,
+    #121212 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite linear;
+  border-radius: var(--radius-md);
+}
+
+@keyframes skeleton-loading {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* --- LOGO SKELETON --- */
+.skeleton-circle { border-radius: 50%; }
+.skeleton-text { height: 1rem; margin-bottom: 0.5rem; }
+.skeleton-title { height: 1.5rem; margin-bottom: 1rem; }
+.skeleton-image { height: 200px; margin-bottom: 1rem; }
 
 /* ========================================
    MODAL DE COMPRA (Y Modales Globales)

@@ -17,7 +17,7 @@
 | **Curso** | 2º DAW |
 | **Modalidad** | Individual |
 | **Tiempo estimado** | 250 horas |
-| **Fecha de entrega** | Marzo 2026 |
+| **Fecha de entrega** | Abril 2026 |
 
 ---
 
@@ -46,6 +46,7 @@
 10. [Metodología de Desarrollo](#10-metodología-de-desarrollo)
 11. [Estado Actual del Proyecto](#11-estado-actual-del-proyecto)
 12. [Planificación y Roadmap](#12-planificación-y-roadmap)
+13. [Implementaciones Futuras](#13-implementaciones-futuras)
 
 ---
 
@@ -182,16 +183,18 @@ Para gestionar de forma coherente y continua el tamaño, el proyecto se aborda b
 
 ## 11. Estado Actual del Proyecto
 
-A fecha de la presente memoria, se han completado e interconectado plenamente todas las fases estructurales de software:
+A fecha de la presente memoria, **todas las fases planificadas del proyecto han sido completadas satisfactoriamente**. El sistema está operativo en su totalidad, tanto en modo desarrollo como en modo producción:
 
-- ✅ **Infraestructura Docker completa:** PostgreSQL, RabbitMQ, PHP-FPM, Nginx, Node, Worker.
-- ✅ **Capa de Dominio Hexagonal:** Entidades principales y casos de uso.
-- ✅ **Flujos de Seguridad:** JWT, endpoints validados por roles en el Backend. Procesador de Pasarela transaccional.
-- ✅ **Frontend Angular SPA Plenamente Funcional:**
-  - Desarrollo SPA implementado bajo arquitectura **Zoneless** optimizada, erradicando fallos de detección en observadores de estado mediante el uso estricto de _Angular Signals_ puros.
-  - El **flujo de compra de alta fidelidad** está asegurado mediante Interceptores de autenticación inteligentes y un rediseño de pasarela transaccional simulada (basada en *Stripe UI*).
-  - La **sección de Perfil de Usuario y Dashboard Administrativo** permite visualizar compras y administrar eventos con modales propios de Alta/Baja lógica de forma instantánea. Renderizado visual de códigos QR precisos para el control.
-- ⏳ **Próximo Paso:** Extensión y desarrollo de la fase final de Testing unitario/funcional exhaustivo y validación (QA) (Fase 7).
+- ✅ **Infraestructura Docker completa:** 6 servicios en desarrollo (PostgreSQL, RabbitMQ, PHP-FPM, Nginx, Node, Worker) y 5 en producción (sin Node, con estáticos compilados).
+- ✅ **Despliegue de producción con `ng build`:** Dockerfile multi-stage que compila Angular en modo producción y sirve los estáticos optimizados directamente desde Nginx, eliminando la dependencia del servidor de desarrollo Node.
+- ✅ **Capa de Dominio Hexagonal completa:** Entidades principales, 4 puertos de aplicación (`EmailSender`, `PaymentGateway`, `PdfGenerator`, `QrCodeGenerator`) y sus 4 adaptadores concretos (`Symfony`, `Simulated`, `Dompdf`, `Endroid`).
+- ✅ **Flujos de Seguridad:** JWT (LexikJWT), endpoints validados por roles (`ROLE_ADMIN`/`ROLE_USER`) en Backend y Guards en Frontend.
+- ✅ **Frontend Angular 21 SPA Plenamente Funcional:**
+  - Desarrollo SPA implementado bajo arquitectura **Zoneless** optimizada con _Angular Signals_ puros.
+  - Flujo de **compra de alta fidelidad** con pasarela transaccional simulada (Stripe Mock UI).
+  - **Perfil de Usuario y Dashboard Administrativo** con modales propios de Alta/Baja lógica y renderizado de códigos QR.
+- ✅ **Suite de Testing con PHPUnit:** Tests unitarios y funcionales completos para los handlers de la capa de Aplicación, con ejecución 100% limpia (Exit Code 0) sin deprecaciones.
+- ✅ **Auditoría de Accesibilidad y SEO:** Atributos `aria-label`, vinculación de formularios, meta-etiquetas y jerarquía semántica HTML5.
 
 ---
 
@@ -200,14 +203,35 @@ A fecha de la presente memoria, se han completado e interconectado plenamente to
 | Fase | Descripción | Estado |
 |------|-------------|--------|
 | **Fase 1 – Infraestructura** | Dockerización completa del entorno y configuración de todos los servicios. | ✅ Completada |
-| **Fase 2 – Dominio y Aplicación** | Definición de entidades, interfaces y primeros casos de uso. | ✅ Completada |
-| **Fase 3 – API REST** | Autenticación JWT y lógica core robustecida en infraestructura. | ✅ Completada |
-| **Fase 4 – Gestión de Tickets y QR** | Generación asíncrona de QR y envío de email mediante RabbitMQ. | ✅ Completada |
-| **Fase 6 – Frontend SPA** | Pantallas responsivas de Angular: eventos, compra interactiva y perfil. | ✅ Completada |
-| **Fase 6.1 – Lógica de Compra** | Implementación del checkout funcional y conexión interconectada con la API. | ✅ Completada |
-| **Fase 6.2 – Gestión de Perfil** | Visualización de entradas compradas y renderizado de QRs para puerto. | ✅ Completada |
-| **Fase 7 – Testing final y QA** | Verificación unitaria y funcional progresiva en Backend y front-testing. | ⏳ En Progreso / Testing |
+| **Fase 2 – Dominio y Aplicación** | Definición de entidades, interfaces y primeros casos de uso (Arquitectura Hexagonal). | ✅ Completada |
+| **Fase 3 – API REST** | Autenticación JWT, roles y lógica core robustecida en infraestructura. | ✅ Completada |
+| **Fase 4 – Gestión de Tickets y QR** | Generación asíncrona de QR, PDFs y envío de email mediante RabbitMQ. | ✅ Completada |
+| **Fase 5 – Simulación de Pagos** | Pasarela de pagos simulada (Stripe Mock) con Patrón Hexagonal (Ports & Adapters). | ✅ Completada |
+| **Fase 6 – Frontend SPA** | Pantallas responsivas de Angular: eventos, compra interactiva, perfil y administración. | ✅ Completada |
+| **Fase 7 – Testing y QA** | Suite PHPUnit con tests unitarios y funcionales. Accesibilidad y SEO. | ✅ Completada |
+| **Fase 8 – Despliegue Producción** | Dockerfile multi-stage, `compose.prod.yml`, Nginx sirviendo estáticos de `ng build`. | ✅ Completada |
 
 ---
 
-*Documento actualizado — Memoria Técnica TFG (Fase de Consolidación Frontend) – Abril 2026*
+## 13. Implementaciones Futuras
+
+Aunque el proyecto cubre la totalidad de los requisitos funcionales planificados, existen múltiples vías de evolución que podrían abordarse en un entorno profesional real:
+
+### Funcionalidades de negocio
+* **Integración con pasarela de pagos real (Stripe/PayPal):** Gracias a la Arquitectura Hexagonal, bastaría con implementar un nuevo adaptador para `PaymentGatewayInterface` que conecte con la API real de Stripe, sin modificar ninguna lógica de negocio existente.
+* **Sistema de categorías y filtros avanzados:** Clasificación de eventos por tipo (concierto, teatro, deporte, conferencia), ubicación geográfica y rango de fechas, con búsqueda full-text.
+* **Sistema de reembolsos y cancelaciones:** Permitir al usuario solicitar la devolución de una entrada antes del evento, con flujo de aprobación por parte del organizador.
+* **Notificaciones en tiempo real (WebSockets):** Alertas push para avisar al usuario de cambios en eventos, confirmaciones de compra y recordatorios previos al evento.
+* **Estadísticas y analíticas para organizadores:** Dashboard con métricas de ventas, ocupación, ingresos y gráficas de tendencia para cada evento.
+
+### Mejoras técnicas
+* **Despliegue en VPS/Cloud (CI/CD):** Pipeline de integración y despliegue continuo con GitHub Actions, desplegando automáticamente en un servidor cloud (AWS, DigitalOcean).
+* **Testing E2E con Cypress/Playwright:** Automatización de pruebas de extremo a extremo simulando la interacción real del usuario en el navegador.
+* **Internacionalización (i18n):** Soporte multiidioma para expandir la plataforma a mercados internacionales, aprovechando el módulo `@angular/localize`.
+* **Aplicación móvil nativa (PWA / Capacitor):** Conversión de la SPA Angular en una Progressive Web App instalable o empaquetado nativo para iOS/Android mediante Ionic Capacitor.
+* **Caché distribuida (Redis):** Implementación de una capa de caché para optimizar las consultas frecuentes (listados de eventos, validación de tokens) y reducir la carga sobre PostgreSQL.
+* **Rate Limiting y protección anti-bots:** Middleware de control de tasa de peticiones para prevenir abuso en endpoints críticos como compra y registro.
+
+---
+
+*Documento actualizado — Memoria Técnica TFG (Versión Final) – Abril 2026*

@@ -17,18 +17,14 @@
   margin-bottom: var(--space-xl);
 }
 
-.auth-header .brand-icon {
-  width: 3rem;
-  height: 3rem;
-  background-color: var(--accent);
-  color: #000;
-  font-weight: 800;
-  font-size: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
+.auth-header .brand-logo-auth {
+  width: 40%;
+  max-width: 160px;
+  height: auto;
+  display: block;
   margin: 0 auto var(--space-lg);
+  border-radius: var(--radius-lg);
+  object-fit: contain;
 }
 
 .auth-header .heading-lg {

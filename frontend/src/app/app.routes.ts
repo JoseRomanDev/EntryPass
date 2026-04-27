@@ -54,6 +54,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: ''
+    loadComponent: () => import('./features/error/not-found/not-found').then(m => m.NotFoundComponent),
+    title: 'Página no encontrada - EntryPass'
   }
 ];

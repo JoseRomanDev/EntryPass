@@ -1,0 +1,73 @@
+# ==========================================
+# ENTRYPASS - Docker Compose PRODUCCIÓN
+# ==========================================
+# Usa: docker compose -f compose.prod.yml up -d --build
+# O simplemente: make prod-up
+# ==========================================
+
+services:
+  #1. Base de datos PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_pass
+      POSTGRES_DB: entrypass_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  #2. Broker de mensajeria (RabbitMQ)
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  #3. Backend (PHP-FPM)
+  php:
+    build:
+      context: ./docker/php
+    container_name: php
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  #4. Servidor web (Nginx) + Frontend compilado
+  #    En producción, Nginx sirve directamente los estáticos de Angular
+  #    generados por "ng build" (ya NO hace proxy a un servidor de desarrollo)
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/dockerfile.prod
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - php
+
+  #5. Worker (Procesamiento asincrono)
+  worker:
+    build:
+      context: ./docker/php
+    container_name: worker
+    command: php bin/console messenger:consume async --time-limit=3600 -vv
+    restart: unless-stopped
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - rabbitmq
+      - postgres
+
+volumes:
+  db-data:
+  rabbitmq-data:

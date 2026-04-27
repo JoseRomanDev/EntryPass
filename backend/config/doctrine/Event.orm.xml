@@ -13,6 +13,7 @@
         <field name="date" type="datetime_immutable"/>
         <field name="price" type="float"/>
         <field name="capacity" type="integer"/>
+        <field name="category" type="string" length="50" nullable="true" />
         <field name="status" type="boolean" />
     </entity>
 </doctrine-mapping>

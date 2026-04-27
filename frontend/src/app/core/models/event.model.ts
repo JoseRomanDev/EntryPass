@@ -5,5 +5,6 @@ export interface Event {
   date: string;
   price: number;
   capacity: number;
+  category: string;
   status: boolean;
 }
