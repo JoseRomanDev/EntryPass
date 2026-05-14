@@ -1,0 +1,55 @@
+<div class="static-page">
+  <div class="static-container">
+    <header class="static-header">
+      <h1 class="static-title">Cómo Funciona</h1>
+      <p class="static-subtitle">Entiende el flujo de compra y la tecnología que hace posible EntryPass.</p>
+    </header>
+
+    <div class="static-content">
+      <section class="static-section">
+        <h2>Flujo de Compra</h2>
+        <p>
+          Comprar entradas en EntryPass es un proceso sencillo, seguro y transparente. Aquí te explicamos los pasos:
+        </p>
+        <div class="grid-features">
+          <div class="feature-card">
+            <h4>1. Explora</h4>
+            <p>Busca entre los mejores eventos de música, teatro o deportes en nuestro catálogo actualizado.</p>
+          </div>
+          <div class="feature-card">
+            <h4>2. Selecciona</h4>
+            <p>Elige el número de entradas que necesitas y verifica el precio final antes de continuar.</p>
+          </div>
+          <div class="feature-card">
+            <h4>3. Paga</h4>
+            <p>Utiliza nuestra pasarela de pagos simulada (Stripe Elements) para una transacción segura.</p>
+          </div>
+          <div class="feature-card">
+            <h4>4. Recibe</h4>
+            <p>Obtén tus entradas instantáneamente con un código QR único enviado a tu email y perfil.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="static-section">
+        <h2>Detrás de Escena</h2>
+        <p>
+          Cuando confirmas una compra, nuestro sistema activa una serie de procesos asíncronos para garantizar la eficiencia:
+        </p>
+        <div class="highlight-box">
+          <h3>Procesamiento Asíncrono</h3>
+          <p>
+            Las tareas pesadas como la generación de códigos QR, creación de PDFs unificados y envío de correos electrónicos se delegan a través de <strong>RabbitMQ</strong>. Esto permite que la aplicación web te responda de forma inmediata sin esperas innecesarias.
+          </p>
+        </div>
+      </section>
+
+      <section class="static-section">
+        <h2>Validación en Puerta</h2>
+        <p>
+          El día del evento, solo tienes que mostrar el código QR desde tu móvil. El personal de acceso utilizará nuestra herramienta de validación para escanearlo y confirmar tu entrada en tiempo real, marcándola como utilizada para evitar fraudes.
+        </p>
+      </section>
+    </div>
+  </div>
+</div>

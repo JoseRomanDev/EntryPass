@@ -1,9 +1,9 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { PurchaseService } from '../../../core/services/purchase.service';
-import { AuthService } from '../../../core/services/auth.service';
-import { Purchase } from '../../../core/models/purchase.model';
+import { PurchaseService } from '../../core/services/purchase.service';
+import { AuthService } from '../../core/services/auth.service';
+import { Purchase } from '../../core/models/purchase.model';
 
 @Component({
   selector: 'app-profile',

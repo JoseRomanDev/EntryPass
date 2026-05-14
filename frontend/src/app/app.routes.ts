@@ -25,7 +25,7 @@ export const routes: Routes = [
   },
   {
     path: 'profile',
-    loadComponent: () => import('./features/profile/profile/profile').then(m => m.ProfileComponent),
+    loadComponent: () => import('./features/profile/profile').then(m => m.ProfileComponent),
     title: 'Mi Perfil - EntryPass',
     canActivate: [authGuard]
   },
@@ -49,6 +49,36 @@ export const routes: Routes = [
       {
         path: 'events/edit/:id',
         loadComponent: () => import('./features/admin/event-form/event-form').then(m => m.EventFormComponent)
+      }
+    ]
+  },
+  {
+    path: 'info',
+    children: [
+      {
+        path: 'about',
+        loadComponent: () => import('./features/info/about/about').then(m => m.AboutComponent),
+        title: 'Sobre Nosotros - EntryPass'
+      },
+      {
+        path: 'how-it-works',
+        loadComponent: () => import('./features/info/how-it-works/how-it-works').then(m => m.HowItWorksComponent),
+        title: 'Cómo Funciona - EntryPass'
+      },
+      {
+        path: 'terms',
+        loadComponent: () => import('./features/info/terms/terms').then(m => m.TermsComponent),
+        title: 'Términos y Condiciones - EntryPass'
+      },
+      {
+        path: 'privacy',
+        loadComponent: () => import('./features/info/privacy/privacy').then(m => m.PrivacyComponent),
+        title: 'Política de Privacidad - EntryPass'
+      },
+      {
+        path: 'contact',
+        loadComponent: () => import('./features/info/contact/contact').then(m => m.ContactComponent),
+        title: 'Contacto - EntryPass'
       }
     ]
   },

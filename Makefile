@@ -25,8 +25,9 @@ help:
 	@echo "  make php     - Accede a la terminal del Backend (Symfony)"
 	@echo "  make node    - Accede a la terminal del Frontend (Angular)"
 	@echo "  make psql    - Accede a la consola SQL de PostgreSQL"
-	@echo "  make seed    - Inserta el usuario administrador inicial"
-	@echo "  make seed-demo - Inserta datos de demostracion"
+	@echo "  make migrate   - Ejecuta las migraciones de base de datos"
+	@echo "  make seed      - Inserta el usuario administrador inicial"
+	@echo "  make seed-demo - Inserta datos de demostracion (requiere migrate previo)"
 
 # --- Desarrollo (compose.yml) ---
 .PHONY: up down start stop build logs
@@ -65,7 +66,7 @@ prod-logs:
 	docker compose -f compose.prod.yml logs -f
 
 # --- Opciones de Acceso a Contenedores ---
-.PHONY: php node psql seed seed-demo
+.PHONY: php node psql migrate seed seed-demo
 
 php:
 	docker exec -it php sh
@@ -75,6 +76,9 @@ node:
 
 psql:
 	docker exec -it postgres psql -U postgres_user -d entrypass_db
+
+migrate:
+	docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
 
 seed:
 	docker compose exec php php bin/console app:seed-admin

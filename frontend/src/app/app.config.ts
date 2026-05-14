@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, LOCALE_ID } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
@@ -12,7 +12,10 @@ registerLocaleData(localeEs, 'es');
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
+    provideRouter(routes, withInMemoryScrolling({ 
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled'
+    })),
     provideHttpClient(withInterceptors([authInterceptor])),
     { provide: LOCALE_ID, useValue: 'es' }
   ],
