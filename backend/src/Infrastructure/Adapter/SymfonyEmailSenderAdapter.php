@@ -15,7 +15,7 @@ class SymfonyEmailSenderAdapter implements EmailSenderInterface
     public function send(string $to, string $subject, string $htmlBody, array $attachments = [], array $inlineImages = []): void
     {
         $email = (new Email())
-            ->from('entrypass@entrypass.dev')
+            ->from($_ENV['MAILER_FROM'] ?? 'entrypass@entrytech.duckdns.org')
             ->to($to)
             ->subject($subject)
             ->html($htmlBody);
