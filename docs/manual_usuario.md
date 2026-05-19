@@ -1,61 +1,68 @@
-# Manual de Usuario - EntryPass
+# Manual del Cliente - EntryPass
 
-Este manual describe el funcionamiento de la plataforma **EntryPass** para los dos perfiles principales: el **Cliente** (Usuario Final) y el **Organizador** (Administrador).
-
----
-
-##  1. Perfil del Cliente (Compra de Entradas)
-
-El cliente es el usuario que navega por la plataforma para descubrir eventos y adquirir sus entradas.
-
-### 1.1. Registro y Acceso
-- Accede a la plataforma y haz clic en "Iniciar Sesión" o "Registrarse".
-- Introduce tus datos. Una vez autenticado, tendrás acceso a tu **Perfil Personal**.
-
-### 1.2. Exploración de Eventos
-- En la página principal, puedes visualizar todos los eventos disponibles.
-- Utiliza la barra de búsqueda para filtrar eventos por nombre en tiempo real.
-- Haz clic en la tarjeta de un evento para ver sus detalles (fecha, aforo, descripción).
-
-### 1.3. Proceso de Compra (Checkout)
-1. Haz clic en el botón **"Comprar Entrada"**.
-2. Si no has iniciado sesión, el sistema te redirigirá al login y te devolverá al proceso de compra automáticamente.
-3. Se abrirá un **Modal de Checkout**. Selecciona la cantidad de entradas (máximo 4 por evento).
-4. El sistema validará el stock en tiempo real.
-5. Confirma la compra. Recibirás una confirmación visual instantánea.
-6. El sistema procesará tu pedido de forma asíncrona y recibirás un email con tus entradas (PDF).
-
-### 1.4. Mis Entradas y Códigos QR
-- Accede a tu sección de **Perfil > Mis Entradas**.
-- Verás un listado de tus compras.
-- Al desplegar una compra, podrás ver cada **Código QR** individual. Este es el código que deberás presentar en la entrada del evento.
+¡Bienvenido al **Manual del Cliente de EntryPass**! Este documento detalla de manera sencilla y clara cómo registrarse, buscar tus eventos favoritos, comprar entradas de forma segura y acceder a tus tickets digitales con códigos QR para presentarlos el día del espectáculo.
 
 ---
 
-##  2. Perfil del Organizador (Administración)
+## 📌 Índice de Contenidos
 
-El organizador gestiona la oferta de eventos y realiza el control de acceso.
-
-### 2.1. Acceso Administrativo
-- Utiliza las credenciales de administrador (ej: `admin@entrypass.com`).
-- Una vez dentro, verás la opción **"Administración"** en la barra de navegación.
-
-### 2.2. Gestión de Eventos (Panel de Control)
-Desde el panel de gestión puedes:
-- **Crear Eventos**: Define título, descripción, fecha, imagen y aforo total.
-- **Editar**: Modifica la información de eventos existentes.
-- **Baja Lógica (Eliminar)**: Puedes desactivar eventos. El sistema los marcará como eliminados pero mantendrá la integridad de las compras ya realizadas.
-
-### 2.3. Control de Acceso (Portería)
-- El día del evento, el organizador puede acceder a la herramienta de **Validación**.
-- Al escanear el QR de un cliente (o validar su Hash manualmente), el sistema verificará:
-    - ✅ **Verde**: Entrada válida. El sistema la marca como "Usada" (`used`).
-    - ❌ **Rojo**: Entrada ya utilizada anteriormente o inexistente.
-- Este proceso garantiza un control de aforo real y evita el fraude por duplicidad.
+1. [Registro e Inicio de Sesión](#1-registro-e-inicio-de-sesión)
+2. [Exploración y Búsqueda de Eventos](#2-exploración-y-búsqueda-de-evetos)
+3. [Proceso de Compra (Checkout)](#3-proceso-de-compra-checkout)
+4. [Mis Entradas y Códigos QR](#4-mis-entradas-y-códigos-qr)
+5. [Preguntas Frecuentes y Soporte al Comprador](#5-preguntas-frecuentes-y-soporte-al-comprador)
 
 ---
 
-##  3. Soporte Técnico Técnico y Troubleshooting
+## 👤 1. Registro e Inicio de Sesión
 
-- **QR no carga**: Asegúrate de tener conexión a internet. Los QRs se generan de forma securizada a partir de los datos en la base de datos.
-- **Email no recibido**: Revisa tu bandeja de SPAM. El envío puede tardar unos segundos debido al procesamiento asíncrono en colas (RabbitMQ).
+Para poder adquirir entradas en la plataforma y realizar un seguimiento de tus compras, necesitas disponer de una cuenta activa:
+
+*   **Creación de Cuenta:** Haz clic en **Registrarse** en la barra de navegación superior. Completa los campos básicos del formulario (nombre, correo electrónico y contraseña). El sistema validará en tiempo real que el correo sea correcto y que la contraseña sea segura.
+*   **Verificar Contraseña:** Puedes hacer clic en el icono del ojo SVG en el campo de contraseña para mostrar/ocultar los caracteres escritos y asegurarte de que no haya erratas.
+*   **Acceso y Protección (AuthGuard):** Si intentas realizar una compra sin estar autenticado, no te preocupes: el sistema recordará automáticamente qué entrada querías comprar, te redirigirá a la pantalla de Login y, tras introducir tus credenciales con éxito, te devolverá de forma fluida directamente al proceso de checkout en el que estabas.
+
+---
+
+## 🔍 2. Exploración y Búsqueda de Eventos
+
+*   **Catálogo Principal (Home):** En la página de inicio dispones de un carrusel dinámico interactivo con espectáculos destacados y una cuadrícula (grid) donde se muestran todos los eventos programados organizados en tarjetas cromáticas.
+*   **Filtro en Tiempo Real:** Escribe cualquier palabra clave en la barra de búsqueda de la Home. El listado de eventos se filtrará instantáneamente en pantalla a medida que escribes, sin recargas de página complejas.
+*   **Ficha del Evento:** Haz clic en cualquier tarjeta de evento para inspeccionar todos los detalles específicos del espectáculo: fecha, descripción amplia, precio de la entrada y el aforo disponible restante en tiempo real.
+
+---
+
+## 💳 3. Proceso de Compra (Checkout)
+
+> [!TIP]
+> **Política de Límites:** Por motivos de seguridad y para evitar la reventa masiva, el sistema impone un **límite máximo de 4 entradas** por compra y evento para cada usuario.
+
+1.  Haz clic en **Comprar Entrada** desde la página del evento de tu interés.
+2.  Se desplegará una ventana emergente interactiva de alta fidelidad inspirada en la experiencia de *Stripe Elements*.
+3.  Utiliza los botones `+` y `-` para elegir la cantidad de entradas. El modal recalculará el coste total al instante.
+4.  Introduce los datos de tu tarjeta bancaria simulada (puedes utilizar la clásica tarjeta de pruebas `4242 4242 4242 4242`).
+5.  Haz clic en el botón **Pagar**:
+    *   La plataforma simulará el procesamiento financiero en tiempo real mediante un loader visual interactivo de 1.5 segundos.
+    *   **Procesamiento en Segundo Plano:** Una vez autorizado el pago por el backend, se te confirmará la compra de inmediato en pantalla. El sistema de colas (RabbitMQ) se encargará en segundo plano de generar tu ticket PDF y enviártelo al correo electrónico registrado para evitar tiempos de espera innecesarios.
+
+---
+
+## 🎫 4. Mis Entradas y Códigos QR
+
+Una vez que tu compra se complete correctamente, tendrás tus entradas siempre accesibles desde cualquier dispositivo móvil u ordenador:
+
+*   Accede al menú superior y pulsa en la sección **Mis Entradas**.
+*   Allí aparecerá tu historial completo de compras organizadas por fechas e importes.
+*   Haz clic sobre cualquier compra para desplegarla. Verás el **Código QR individualizado** por cada ticket adquirido.
+*   **Seguridad Digital:** El código QR contiene un Hash UUID encriptado seguro. El día del espectáculo, el personal de portería escaneará este código para validar que la entrada es auténtica y autorizar tu acceso en milisegundos.
+
+---
+
+## ❓ 5. Preguntas Frecuentes y Soporte al Comprador
+
+*   **¿Cuánto tarda en llegar el email con mi entrada en PDF?**
+    Generalmente se envía en pocos segundos tras completar el pago. Si no lo visualizas en tu bandeja de entrada principal, revisa la carpeta de Correo No Deseado (SPAM).
+*   **¿Puedo llevar la entrada en el móvil o tengo que imprimirla?**
+    No es necesario imprimirla. EntryPass está maquetada con diseño responsivo premium, por lo que puedes abrir la sección de **Mis Entradas** en tu smartphone y enseñar el código QR directamente en el control de accesos.
+*   **Mi sesión se ha cerrado sola tras un tiempo, ¿es normal?**
+    Sí. Para proteger tus datos y transacciones, la sesión expira automáticamente tras un período prolongado de inactividad. El sistema cerrará la sesión de forma segura y solo tendrás que volver a iniciarla.
