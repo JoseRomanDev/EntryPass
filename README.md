@@ -62,7 +62,7 @@ graph TD
     SY -->|Transacción ACID| PG[(PostgreSQL 16)]:::db
     SY -->|1. Publica Compra| RMQ{RabbitMQ Broker}:::queue
     
-    subgraph Procesamiento Asíncrono (Worker)
+    subgraph worker_proc ["Procesamiento Asíncrono (Worker)"]
         W[Symfony Messenger Worker]:::worker -->|2. Consume Mensaje| RMQ
         W -->|3. Genera QR & PDF| PDF[Generador Dompdf/QR]:::worker
         W -->|4. Envía Entrada| SMTP[Servidor SMTP / Correo]:::worker
@@ -81,19 +81,19 @@ graph TD
     classDef app fill:#26b1c4,stroke:#fff,stroke-width:2px,color:#fff;
     classDef infra fill:#0d0d12,stroke:#26b1c4,stroke-width:2px,color:#fff;
 
-    subgraph Core de la Aplicación
-        subgraph Domain [Capa de Dominio]
+    subgraph core ["Core de la Aplicación"]
+        subgraph domain ["Capa de Dominio"]
             E[Entidades Puras: User, Event, Purchase, Ticket]:::domain
             RI[Interfaces de Repositorios]:::domain
         end
         
-        subgraph Application [Capa de Aplicación]
+        subgraph app_layer ["Capa de Aplicación"]
             CU[Casos de Uso: RegisterUser, CreateEvent, ProcessPurchase]:::app
             P[Puertos/Interfaces: QrGeneratorInterface, EmailSenderInterface, PaymentGatewayInterface]:::app
         end
     end
     
-    subgraph Infrastructure [Capa de Infraestructura - Adapters]
+    subgraph infra ["Capa de Infraestructura - Adapters"]
         DB[Doctrine ORM / PostgreSQL 16]:::infra
         PAY[SimulatedPaymentGatewayAdapter]:::infra
         QR[EndroidQrCodeAdapter]:::infra
